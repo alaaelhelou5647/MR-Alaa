@@ -478,6 +478,16 @@
             padding: 0 10px;
             text-align: center;
            }
+
+           .footer-container{
+            flex-direction: column;
+            gap: 30px;
+            padding: 30px 20px;
+           }
+
+           .footer-column{
+            width: 70%;
+           }
         }
 
                 /* استعلامات الوسائط للتجاوب */
