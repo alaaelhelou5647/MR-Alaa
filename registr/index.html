@@ -4,195 +4,491 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://mr-alaa.vercel.app/logo.png" type="image/png">
-    <title>register</title>
+    <title>تسجيل حساب جديد</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
- <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, setDoc } 
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBB-L6uhazoGVYg2lkphimDMbdjFhrfXjw",
-  authDomain: "login-87618.firebaseapp.com",
-  projectId: "login-87618",
-  storageBucket: "login-87618.firebasestorage.app",
-  messagingSenderId: "915916987311",
-  appId: "1:915916987311:web:0da484d712d79b50916d5a"
-};
-
-const app = initializeApp(firebaseConfig);
-window.db = getFirestore(app);
-window.doc = doc;
-window.setDoc = setDoc;
-
-</script>
-
-
 </head>
 <body>
     <div class="page-layout">
 
-  <!-- صورة ثابتة في الجنب -->
-  <div class="side-image">
-    <img src="4fe4035e77e13a6c11c4539d799c1031 (1).jpg">
-  </div>
+        <!-- صورة ثابتة في الجنب -->
+        <div class="side-image">
+            <img src="4fe4035e77e13a6c11c4539d799c1031 (1).jpg" alt="صورة تعليمية">
+        </div>
 
-  <!-- الفورم في الجنب الآخر -->
-  <div class="card">
+        <!-- الفورم في الجنب الآخر -->
+        <div class="card">
+            <h2><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h2>
 
-    <h2>🧮 إنشاء حساب جديد</h2>
+            <label for="name">الاسم ثلاثي</label>
+            <input id="name" placeholder="الاسم الثلاثي" required>
+            <div id="nameError" class="error-message">الاسم يجب أن يكون ثلاثيًا</div>
 
-    <label>الاسم ثلاثي</label>
-    <input id="name" placeholder="الاسم الثلاثي" required>
+            <label for="studentPhone">رقم هاتف الطالب</label>
+            <input id="studentPhone" placeholder="رقم الطالب" maxlength="11">
+            <div id="studentPhoneError" class="error-message">رقم غير صحيح (يجب أن يبدأ بـ 010/011/012/015)</div>
 
-    <label>رقم هاتف الطالب</label>
-    <input id="studentPhone" placeholder="رقم الطالب" maxlength="11">
+            <label for="parentPhone">رقم هاتف ولي الامر</label>
+            <input id="parentPhone" placeholder="رقم ولي الأمر" maxlength="11">
+            <div id="parentPhoneError" class="error-message">رقم غير صحيح أو مطابق لرقم الطالب</div>
 
-    <label>رقم هاتف ولي الامر</label>
-    <input id="parentPhone" placeholder="رقم ولي الأمر" maxlength="11">
+            <label for="grade">الصف</label>
+            <select id="grade">
+                <option value="">اختر الصف</option>
+                <option>1 إعدادي</option>
+                <option>2 إعدادي</option>
+                <option>3 إعدادي</option>
+                <option>1 ثانوي</option>
+                <option>2 ثانوي</option>
+                <option>3 ثانوي</option>
+            </select>
+            <div id="gradeError" class="error-message">يجب اختيار الصف</div>
 
-    <label>الصف</label>
-    <select id="grade">
-      <option value="">اختر الصف</option>
-      <option>1 إعدادي</option>
-      <option>2 إعدادي</option>
-      <option>3 إعدادي</option>
-      <option>1 ثانوي</option>
-      <option>2 ثانوي</option>
-      <option>3 ثانوي</option>
-    </select>
+            <label for="gov">المحافظة</label>
+            <select id="gov">
+                <option value="">اختر المحافظة</option>
+                <option>القاهرة</option>
+                <option>الجيزة</option>
+                <option>الإسكندرية</option>
+                <option>الشرقية</option>
+                <option>الغربية</option>
+                <option>الدقهلية</option>
+                <option>المنوفية</option>
+                <option>البحيرة</option>
+                <option>أسيوط</option>
+                <option>سوهاج</option>
+            </select>
+            <div id="govError" class="error-message">يجب اختيار المحافظة</div>
 
-    <label>المحافظة</label>
-    <select id="gov">
-      <option value="">اختر المحافظة</option>
-      <option>القاهرة</option>
-      <option>الجيزة</option>
-      <option>الإسكندرية</option>
-      <option>الشرقية</option>
-      <option>الغربية</option>
-      <option>الدقهلية</option>
-      <option>المنوفية</option>
-      <option>البحيرة</option>
-      <option>أسيوط</option>
-      <option>سوهاج</option>
-    </select>
+            <label for="studentID">ID</label>
+            <input id="studentID" placeholder="معرف الطالب" readonly>
 
-    <label>ID</label>
-    <input id="studentID" placeholder="معرف الطالب" readonly>
+            <label for="password">كلمة المرور</label>
+            <input id="password" type="password" placeholder="انشاء كلمة المرور (4 أحرف على الأقل)">
+            <div id="passwordError" class="error-message">كلمة المرور يجب أن تكون 4 أحرف على الأقل</div>
 
-    <label>كلمة المرور</label>
-    <input id="password" type="password" placeholder="اختر كلمة المرور">
+            <div class="loader" id="loader"></div>
+            <button onclick="register()" id="registerBtn">
+                <i class="fas fa-save"></i> حفظ البيانات
+            </button>
 
-    <button onclick="register()">💾 حفظ البيانات</button>
+            <div class="result" id="result" style="display:none;">
+                <h3><i class="fas fa-check-circle"></i> تم التسجيل بنجاح!</h3>
+                <p>🔓 تم تسجيل دخولك بنجاح</p>
 
-    <div class="result" id="result">
-<div class="result" id="result" style="display:none;">
-  <h3>🎉 تم التسجيل بنجاح!</h3>
-  <p>🔓 تم تسجيل دخولك بنجاح</p>
+                <div class="login-card">
+                    <p><i class="fas fa-id-card"></i> <b>معرفك:</b> <span id="showID"></span></p>
+                    <p><i class="fas fa-key"></i> <b>كلمة المرور:</b> <span id="showPass"></span></p>
+                    <p class="warning"><i class="fas fa-exclamation-triangle"></i> احفظ هذه البيانات جيدًا</p>
+                </div>
 
-  <div class="login-card">
-    <p><b>🆔 معرفك:</b> <span id="showID"></span></p>
-    <p><b>🔑 كلمة المرور:</b> <span id="showPass"></span></p>
-  </div>
+                <button id="goPageBtn" onclick="goToGradePage()">
+                    <i class="fas fa-arrow-right"></i> الذهاب إلى صفك
+                </button>
+            </div>
 
-  <button id="goPageBtn" onclick="goToGradePage()">➡️ اذهب إلى صفك</button>
-</div>
+            <p style="text-align: center; margin-top: 20px; color: var(--gray-text);">
+                لديك حساب بالفعل؟ <a href="#" onclick="checkExistingUser()" style="color: var(--primary-color);">دخول سريع</a>
+            </p>
+        </div>
     </div>
 
-  </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            setDoc, 
+            getDoc,
+            query,
+            where,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-</div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB-L6uhazoGVYg2lkphimDMbdjFhrfXjw",
+            authDomain: "login-87618.firebaseapp.com",
+            projectId: "login-87618",
+            storageBucket: "login-87618.firebasestorage.app",
+            messagingSenderId: "915916987311",
+            appId: "1:915916987311:web:0da484d712d79b50916d5a"
+        };
 
-<script>
-function generateID(){
-  return Math.floor(1000 + Math.random() * 9000).toString();
-}
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-window.onload = function(){
-  document.getElementById("studentID").value = generateID();
-};
+        // جعل الدوال متاحة عالميًا
+        window.db = db;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.getDocs = getDocs;
+        window.query = query;
+        window.where = where;
+        window.collection = collection;
+    </script>
 
-function validPhone(num){
-  return /^(010|011|012|015)\d{8}$/.test(num);
-}
+    <script>
+        // مصفوفة لتخزين الأرقام المستخدمة لمنع التكرار
+        let usedPhones = new Set();
 
-async function register(){
-  let name = document.getElementById("name").value.trim();
-  let sPhone = document.getElementById("studentPhone").value.trim();
-  let pPhone = document.getElementById("parentPhone").value.trim();
-  let grade = document.getElementById("grade").value;
-  let gov = document.getElementById("gov").value;
-  let pass = document.getElementById("password").value;
-  let id = document.getElementById("studentID").value;
+        // دالة توليد ID فريد
+        function generateID() {
+            let id;
+            do {
+                id = Math.floor(1000 + Math.random() * 9000).toString();
+            } while (localStorage.getItem(`student_${id}`));
+            return id;
+        }
 
-  if(name.split(" ").length < 3){
-    alert("اكتب الاسم الثلاثي كامل!");
-    return;
-  }
+        // تحميل البيانات المخزنة محليًا
+        window.onload = async function() {
+            // توليد ID جديد إذا لم يكن هناك بيانات
+            document.getElementById("studentID").value = generateID();
+            
+            // تحقق مما إذا كان هناك مستخدم مسجل بالفعل
+            await checkForExistingRegistration();
+            
+            // تحميل البيانات من localStorage للمسودة
+            loadDraftData();
+            
+            // إضافة مستمعين للأحداث للتحقق الفوري
+            setupInputValidation();
+        };
 
-  if(!validPhone(sPhone)){
-    alert("رقم الطالب لازم يبدأ بـ 010/011/012/015 ويكون 11 رقم!");
-    return;
-  }
+        // تحقق من وجود تسجيل سابق
+        async function checkForExistingRegistration() {
+            const studentId = localStorage.getItem("currentStudentId");
+            if (studentId) {
+                try {
+                    const studentRef = doc(db, "students", studentId);
+                    const studentSnap = await getDoc(studentRef);
+                    
+                    if (studentSnap.exists()) {
+                        // إذا كان المستخدم مسجلاً بالفعل، توجيهه مباشرة
+                        const data = studentSnap.data();
+                        localStorage.setItem("lastGrade", data.grade);
+                        showMessage("تم تسجيل الدخول تلقائياً", "success");
+                        setTimeout(() => goToGradePage(), 1500);
+                    }
+                } catch (err) {
+                    console.error("خطأ في التحقق من التسجيل:", err);
+                }
+            }
+        }
 
-  if(pPhone.length < 10){
-    alert("اكتب رقم ولي الأمر صحيح!");
-    return;
-  }
+        // تحميل البيانات المحفوظة كمسودة
+        function loadDraftData() {
+            const saved = localStorage.getItem("studentDraft");
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    
+                    document.getElementById("name").value = data.name || "";
+                    document.getElementById("studentPhone").value = data.studentPhone || "";
+                    document.getElementById("parentPhone").value = data.parentPhone || "";
+                    document.getElementById("grade").value = data.grade || "";
+                    document.getElementById("gov").value = data.governorate || "";
+                    document.getElementById("password").value = data.password || "";
+                    
+                    if (data.id) {
+                        document.getElementById("studentID").value = data.id;
+                    }
+                } catch (e) {
+                    console.error("خطأ في تحميل المسودة:", e);
+                }
+            }
+        }
 
-  if(!grade || !gov || pass.length < 4){
-    alert("اكمل كل البيانات وكلمة المرور 4 أحرف على الأقل");
-    return;
-  }
+        // إعداد التحقق من المدخلات
+        function setupInputValidation() {
+            const inputs = ['name', 'studentPhone', 'parentPhone', 'password'];
+            
+            inputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('blur', validateInput);
+                    input.addEventListener('input', saveDraft);
+                }
+            });
+            
+            const selects = ['grade', 'gov'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.addEventListener('change', saveDraft);
+                }
+            });
+        }
 
-  let studentData = {
-    id: id,
-    name: name,
-    studentPhone: sPhone,
-    parentPhone: pPhone,
-    grade: grade,
-    governorate: gov,
-    password: pass,
-    createdAt: new Date()
-  };
+        // التحقق من الإدخال
+        function validateInput(e) {
+            const input = e.target;
+            const value = input.value.trim();
+            const errorElement = document.getElementById(`${input.id}Error`);
+            
+            if (!errorElement) return;
+            
+            let isValid = true;
+            let errorMessage = "";
+            
+            switch(input.id) {
+                case 'name':
+                    isValid = value.split(" ").length >= 3;
+                    errorMessage = "الاسم يجب أن يكون ثلاثيًا";
+                    break;
+                    
+                case 'studentPhone':
+                    isValid = /^(010|011|012|015)\d{8}$/.test(value);
+                    errorMessage = "رقم غير صحيح (يجب أن يبدأ بـ 010/011/012/015)";
+                    break;
+                    
+                case 'parentPhone':
+                    const studentPhone = document.getElementById('studentPhone').value.trim();
+                    isValid = /^(010|011|012|015)\d{8}$/.test(value) && value !== studentPhone;
+                    errorMessage = value === studentPhone ? 
+                        "رقم ولي الأمر لا يمكن أن يكون نفس رقم الطالب" : 
+                        "رقم غير صحيح (يجب أن يبدأ بـ 010/011/012/015)";
+                    break;
+                    
+                case 'password':
+                    isValid = value.length >= 4;
+                    errorMessage = "كلمة المرور يجب أن تكون 4 أحرف على الأقل";
+                    break;
+            }
+            
+            if (!isValid && value) {
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = "block";
+                input.style.borderColor = "var(--error-text)";
+            } else {
+                errorElement.style.display = "none";
+                input.style.borderColor = isValid ? "#ddd" : "var(--error-text)";
+            }
+            
+            return isValid;
+        }
 
-  try {
-    const studentRef = window.doc(window.db, "students", id);
-    await window.setDoc(studentRef, studentData);
+        // حفظ البيانات كمسودة
+        function saveDraft() {
+            const draftData = {
+                name: document.getElementById("name").value.trim(),
+                studentPhone: document.getElementById("studentPhone").value.trim(),
+                parentPhone: document.getElementById("parentPhone").value.trim(),
+                grade: document.getElementById("grade").value,
+                governorate: document.getElementById("gov").value,
+                password: document.getElementById("password").value,
+                id: document.getElementById("studentID").value
+            };
+            
+            localStorage.setItem("studentDraft", JSON.stringify(draftData));
+        }
 
-    // إظهار شاشة النجاح
-    document.getElementById("result").style.display = "block";
-    document.getElementById("showID").innerText = id;
-    document.getElementById("showPass").innerText = pass;
+        // التحقق من عدم تكرار رقم الهاتف
+        async function checkPhoneDuplicate(phone) {
+            try {
+                const studentsRef = collection(db, "students");
+                const q = query(studentsRef, where("studentPhone", "==", phone));
+                const querySnapshot = await getDocs(q);
+                
+                return !querySnapshot.empty;
+            } catch (err) {
+                console.error("خطأ في التحقق من التكرار:", err);
+                return false;
+            }
+        }
 
-    // نخزن الصف مؤقتًا للانتقال للصفحة
-    window.selectedGrade = grade;
+        // التسجيل الرئيسي
+        async function register() {
+            // جمع البيانات
+            const name = document.getElementById("name").value.trim();
+            const sPhone = document.getElementById("studentPhone").value.trim();
+            const pPhone = document.getElementById("parentPhone").value.trim();
+            const grade = document.getElementById("grade").value;
+            const gov = document.getElementById("gov").value;
+            const pass = document.getElementById("password").value;
+            const id = document.getElementById("studentID").value;
 
-  } catch (err) {
-    alert("خطأ في الحفظ: " + err.message);
-  }
-}
+            // التحقق من صحة البيانات
+            if (!validateAll()) {
+                return;
+            }
 
-// زر الذهاب لصفحة الصف
-function goToGradePage(){
-  let g = window.selectedGrade;
+            // التحقق من عدم تكرار رقم الهاتف
+            const isDuplicate = await checkPhoneDuplicate(sPhone);
+            if (isDuplicate) {
+                showMessage("رقم الهاتف مسجل بالفعل!", "error");
+                return;
+            }
 
-  let pages = {
-    "1 إعدادي": "/prep-1",
-    "2 إعدادي": "/prep-2",
-    "3 إعدادي": "/prep-3",
-    "1 ثانوي": "/sec-1",
-    "2 ثانوي": "/sec-1",
-    "3 ثانوي": "/sec-1"
-  };
+            // إظهار مؤشر التحميل
+            const loader = document.getElementById("loader");
+            const registerBtn = document.getElementById("registerBtn");
+            loader.style.display = "block";
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
 
-  window.location.href = pages[g];
-}
-</script>
+            // تجهيز بيانات الطالب
+            const studentData = {
+                id: id,
+                name: name,
+                studentPhone: sPhone,
+                parentPhone: pPhone,
+                grade: grade,
+                governorate: gov,
+                password: pass,
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
 
+            try {
+                // حفظ في Firebase
+                const studentRef = doc(db, "students", id);
+                await setDoc(studentRef, studentData);
 
+                // حفظ البيانات محليًا
+                localStorage.setItem("studentData", JSON.stringify(studentData));
+                localStorage.setItem("currentStudentId", id);
+                localStorage.setItem("lastGrade", grade);
+                
+                // مسح المسودة
+                localStorage.removeItem("studentDraft");
+                
+                // إظهار رسالة النجاح
+                document.getElementById("result").style.display = "block";
+                document.getElementById("showID").innerText = id;
+                document.getElementById("showPass").innerText = pass;
+                
+                // إخفاء الفورم
+                document.querySelectorAll('input, select, button:not(#goPageBtn)').forEach(el => {
+                    el.style.display = "none";
+                });
+                
+                showMessage("تم التسجيل بنجاح!", "success");
+                
+            } catch (err) {
+                showMessage("خطأ في الحفظ: " + err.message, "error");
+            } finally {
+                loader.style.display = "none";
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '<i class="fas fa-save"></i> حفظ البيانات';
+            }
+        }
 
+        // التحقق من جميع الحقول
+        function validateAll() {
+            const fields = [
+                {id: 'name', test: (v) => v.split(" ").length >= 3, msg: "اكتب الاسم الثلاثي كامل!"},
+                {id: 'studentPhone', test: (v) => /^(010|011|012|015)\d{8}$/.test(v), msg: "رقم الطالب لازم يبدأ بـ 010/011/012/015 ويكون 11 رقم!"},
+                {id: 'parentPhone', test: (v) => /^(010|011|012|015)\d{8}$/.test(v), msg: "رقم ولي الأمر غير صحيح!"},
+                {id: 'grade', test: (v) => !!v, msg: "يجب اختيار الصف!"},
+                {id: 'gov', test: (v) => !!v, msg: "يجب اختيار المحافظة!"},
+                {id: 'password', test: (v) => v.length >= 4, msg: "كلمة المرور يجب أن تكون 4 أحرف على الأقل!"}
+            ];
+
+            for (const field of fields) {
+                const element = document.getElementById(field.id);
+                const value = element ? element.value : '';
+                
+                if (!field.test(value)) {
+                    showMessage(field.msg, "error");
+                    element.focus();
+                    return false;
+                }
+            }
+
+            // التحقق من تطابق أرقام الهواتف
+            const studentPhone = document.getElementById('studentPhone').value.trim();
+            const parentPhone = document.getElementById('parentPhone').value.trim();
+            
+            if (studentPhone === parentPhone) {
+                showMessage("رقم الطالب لا يمكن أن يكون نفس رقم ولي الأمر!", "error");
+                return false;
+            }
+
+            return true;
+        }
+
+        // الانتقال لصفحة الصف
+        function goToGradePage() {
+            const grade = localStorage.getItem("lastGrade");
+            const pages = {
+                "1 إعدادي": "/prep-1",
+                "2 إعدادي": "/prep-2",
+                "3 إعدادي": "/prep-3",
+                "1 ثانوي": "/sec-1",
+                "2 ثانوي": "/sec-2",
+                "3 ثانوي": "/sec-3"
+            };
+
+            if (grade && pages[grade]) {
+                window.location.href = pages[grade];
+            } else {
+                showMessage("لم يتم تحديد الصف!", "error");
+            }
+        }
+
+        // التحقق من المستخدم الحالي
+        function checkExistingUser() {
+            const studentId = localStorage.getItem("currentStudentId");
+            if (studentId) {
+                if (confirm("لديك حساب مسجل بالفعل. هل تريد الذهاب إلى صفحتك؟")) {
+                    goToGradePage();
+                }
+            } else {
+                showMessage("لا يوجد حساب مسجل. يرجى التسجيل أولاً.", "error");
+            }
+        }
+
+        // عرض الرسائل
+        function showMessage(message, type = "info") {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
+                ${message}
+            `;
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                background: ${type === 'error' ? 'var(--error-bg)' : 'var(--success-bg)'};
+                color: ${type === 'error' ? 'var(--error-text)' : 'var(--success-text)'};
+                z-index: 1000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.animation = "slideOut 0.3s ease";
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
+
+        // إضافة أنيميشن للرسائل
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .warning {
+                color: #ff9800;
+                font-size: 14px;
+                margin-top: 10px;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
