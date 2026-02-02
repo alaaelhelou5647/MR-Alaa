@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://mr-alaa.vercel.app/logo.png" type="image/png">
+    <title>register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, setDoc } 
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBB-L6uhazoGVYg2lkphimDMbdjFhrfXjw",
+  authDomain: "login-87618.firebaseapp.com",
+  projectId: "login-87618",
+  storageBucket: "login-87618.firebasestorage.app",
+  messagingSenderId: "915916987311",
+  appId: "1:915916987311:web:0da484d712d79b50916d5a"
+};
+
+const app = initializeApp(firebaseConfig);
+window.db = getFirestore(app);
+window.doc = doc;
+window.setDoc = setDoc;
+
+</script>
+
+
+</head>
+<body>
+    <div class="page-layout">
+
+  <!-- صورة ثابتة في الجنب -->
+  <div class="side-image">
+    <img src="4fe4035e77e13a6c11c4539d799c1031 (1).jpg">
+  </div>
+
+  <!-- الفورم في الجنب الآخر -->
+  <div class="card">
+
+    <h2>🧮 إنشاء حساب جديد</h2>
+
+    <label>الاسم ثلاثي</label>
+    <input id="name" placeholder="الاسم الثلاثي" required>
+
+    <label>رقم هاتف الطالب</label>
+    <input id="studentPhone" placeholder="رقم الطالب" maxlength="11">
+
+    <label>رقم هاتف ولي الامر</label>
+    <input id="parentPhone" placeholder="رقم ولي الأمر" maxlength="11">
+
+    <label>الصف</label>
+    <select id="grade">
+      <option value="">اختر الصف</option>
+      <option>1 إعدادي</option>
+      <option>2 إعدادي</option>
+      <option>3 إعدادي</option>
+      <option>1 ثانوي</option>
+      <option>2 ثانوي</option>
+      <option>3 ثانوي</option>
+    </select>
+
+    <label>المحافظة</label>
+    <select id="gov">
+      <option value="">اختر المحافظة</option>
+      <option>القاهرة</option>
+      <option>الجيزة</option>
+      <option>الإسكندرية</option>
+      <option>الشرقية</option>
+      <option>الغربية</option>
+      <option>الدقهلية</option>
+      <option>المنوفية</option>
+      <option>البحيرة</option>
+      <option>أسيوط</option>
+      <option>سوهاج</option>
+    </select>
+
+    <label>ID</label>
+    <input id="studentID" placeholder="معرف الطالب" readonly>
+
+    <label>كلمة المرور</label>
+    <input id="password" type="password" placeholder="اختر كلمة المرور">
+
+    <button onclick="register()">💾 حفظ البيانات</button>
+
+    <div class="result" id="result">
+<div class="result" id="result" style="display:none;">
+  <h3>🎉 تم التسجيل بنجاح!</h3>
+  <p>🔓 تم تسجيل دخولك بنجاح</p>
+
+  <div class="login-card">
+    <p><b>🆔 معرفك:</b> <span id="showID"></span></p>
+    <p><b>🔑 كلمة المرور:</b> <span id="showPass"></span></p>
+  </div>
+
+  <button id="goPageBtn" onclick="goToGradePage()">➡️ اذهب إلى صفك</button>
+</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function generateID(){
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
+window.onload = function(){
+  document.getElementById("studentID").value = generateID();
+};
+
+function validPhone(num){
+  return /^(010|011|012|015)\d{8}$/.test(num);
+}
+
+async function register(){
+  let name = document.getElementById("name").value.trim();
+  let sPhone = document.getElementById("studentPhone").value.trim();
+  let pPhone = document.getElementById("parentPhone").value.trim();
+  let grade = document.getElementById("grade").value;
+  let gov = document.getElementById("gov").value;
+  let pass = document.getElementById("password").value;
+  let id = document.getElementById("studentID").value;
+
+  if(name.split(" ").length < 3){
+    alert("اكتب الاسم الثلاثي كامل!");
+    return;
+  }
+
+  if(!validPhone(sPhone)){
+    alert("رقم الطالب لازم يبدأ بـ 010/011/012/015 ويكون 11 رقم!");
+    return;
+  }
+
+  if(pPhone.length < 10){
+    alert("اكتب رقم ولي الأمر صحيح!");
+    return;
+  }
+
+  if(!grade || !gov || pass.length < 4){
+    alert("اكمل كل البيانات وكلمة المرور 4 أحرف على الأقل");
+    return;
+  }
+
+  let studentData = {
+    id: id,
+    name: name,
+    studentPhone: sPhone,
+    parentPhone: pPhone,
+    grade: grade,
+    governorate: gov,
+    password: pass,
+    createdAt: new Date()
+  };
+
+  try {
+    const studentRef = window.doc(window.db, "students", id);
+    await window.setDoc(studentRef, studentData);
+
+    // إظهار شاشة النجاح
+    document.getElementById("result").style.display = "block";
+    document.getElementById("showID").innerText = id;
+    document.getElementById("showPass").innerText = pass;
+
+    // نخزن الصف مؤقتًا للانتقال للصفحة
+    window.selectedGrade = grade;
+
+  } catch (err) {
+    alert("خطأ في الحفظ: " + err.message);
+  }
+}
+
+// زر الذهاب لصفحة الصف
+function goToGradePage(){
+  let g = window.selectedGrade;
+
+  let pages = {
+    "1 إعدادي": "/prep-1",
+    "2 إعدادي": "/prep-2",
+    "3 إعدادي": "/prep-3",
+    "1 ثانوي": "/sec-1",
+    "2 ثانوي": "/sec-1",
+    "3 ثانوي": "/sec-1"
+  };
+
+  window.location.href = pages[g];
+}
+</script>
+
+
+
+</body>
+</html>
