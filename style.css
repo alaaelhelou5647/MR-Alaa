@@ -316,7 +316,11 @@
         }
         
         .img-footor{
-            width: 200px;
+            width: 150px;
+        }
+        
+        .footer-top{
+            padding:3% 5%;
         }
 
 .footer-container {
