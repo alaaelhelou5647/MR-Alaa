@@ -8,6 +8,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const data = JSON.parse(localStorage.getItem("loggedStudent"));
+
+  const gradeLinks = {
+    "1 إعدادي": "https://mr-alaa.vercel.app/prep-1/",
+    "2 إعدادي": "https://mr-alaa.vercel.app/prep-2/",
+    "3 إعدادي": "https://mr-alaa.vercel.app/prep-3/",
+    "1 ثانوي": "https://mr-alaa.vercel.app/sec-1/",
+    "2 ثانوي": "https://mr-alaa.vercel.app/sec-2/",
+    "3 ثانوي": "https://mr-alaa.vercel.app/sec-3/"
+  };
+
+  if (data && data.grade) {
+
+    const grade = data.grade.trim();
+
+    const target = gradeLinks[grade];
+
+    if (target) {
+      location.replace(target); // 🔥 أسرع توجيه ممكن
+    } else {
+      console.warn("مرحلة غير معروفة:", grade);
+    }
+
+  } else {
+    console.warn("لا يوجد بيانات طالب في التخزين المحلي.");
+  }
+
+});
+</script>
 </head>
 <body>
     <div class="page-layout">

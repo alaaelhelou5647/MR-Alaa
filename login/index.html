@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://mr-alaa.vercel.app/logo.png" type="image/png">
+    <title>تسجيل الدخول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const data = JSON.parse(localStorage.getItem("loggedStudent"));
+
+  const gradeLinks = {
+    "1 إعدادي": "https://mr-alaa.vercel.app/prep-1/",
+    "2 إعدادي": "https://mr-alaa.vercel.app/prep-2/",
+    "3 إعدادي": "https://mr-alaa.vercel.app/prep-3/",
+    "1 ثانوي": "https://mr-alaa.vercel.app/sec-1/",
+    "2 ثانوي": "https://mr-alaa.vercel.app/sec-2/",
+    "3 ثانوي": "https://mr-alaa.vercel.app/sec-3/"
+  };
+
+  if (data && data.grade) {
+
+    const grade = data.grade.trim();
+
+    const target = gradeLinks[grade];
+
+    if (target) {
+      location.replace(target); // 🔥 أسرع توجيه ممكن
+    } else {
+      console.warn("مرحلة غير معروفة:", grade);
+    }
+
+  } else {
+    console.warn("لا يوجد بيانات طالب في التخزين المحلي.");
+  }
+
+});
+</script>
+
+</head>
+<body>
+    <div class="login-container">
+                <div class="img">
+            <img src="icone.png" alt="">
+        </div>
+        <!-- Session Info (Auto Login) -->
+        <div class="session-info" id="sessionInfo">
+            <div class="session-content">
+                <div class="session-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="session-text">
+                    <h4>لديك جلسة نشطة</h4>
+                    <p>يمكنك الدخول مباشرة بدون إدخال البيانات</p>
+                </div>
+            </div>
+            <button class="auto-login-btn" id="autoLoginBtn">
+                <i class="fas fa-bolt"></i> دخول سريع
+            </button>
+        </div>
+
+        <!-- Login Card -->
+        <div class="login-card">
+            <!-- Logo and Welcome -->
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1 class="welcome-text">مرحباً بعودتك</h1>
+                <p class="sub-text">سجل الدخول لمتابعة دروسك</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="input-group">
+                <input type="text" id="loginID" class="input-field" placeholder="معرف الطالب (ID)" autocomplete="username">
+                <div class="input-icon">
+                    <i class="fas fa-id-card"></i>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="loginPass" class="input-field" placeholder="كلمة المرور" autocomplete="current-password">
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="button" class="password-toggle" id="passwordToggle">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <!-- Login Button -->
+            <button class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                <div class="loader" id="loginLoader"></div>
+            </button>
+
+            <!-- Forgot Password Link -->
+            <div class="forgot-link">
+                <button class="forgot-btn" id="forgotBtn">
+                    <i class="fas fa-key"></i> نسيت كلمة المرور؟
+                </button>
+            </div>
+
+            <!-- Recovery Section (Hidden by default) -->
+            <div class="recovery-section" id="recoverySection">
+                <div class="recovery-title">
+                    <i class="fas fa-unlock-alt"></i> استرجاع كلمة المرور
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="forgetName" class="input-field" placeholder="الاسم الثلاثي المسجل">
+                    <div class="input-icon">
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="tel" id="forgetPhone" class="input-field" placeholder="رقم هاتف الطالب">
+                    <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                </div>
+
+                <!-- Recovery Button -->
+                <button class="recovery-btn" id="recoveryBtn">
+                    <i class="fas fa-redo"></i> استرجاع كلمة المرور
+                    <div class="loader" id="recoveryLoader"></div>
+                </button>
+
+                <!-- Recovery Message -->
+                <div class="message-box" id="recoveryMsg"></div>
+            </div>
+
+            <!-- Login Message -->
+            <div class="message-box" id="loginMessage"></div>
+
+            <!-- Register Link -->
+            <div class="register-link">
+                لا تملك حساباً؟ <a href="register.html">إنشاء حساب جديد</a>
+            </div>
+        </div>
+
+    </div>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    
+    <script>
+// تهيئة Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBB-L6uhazoGVYg2lkphimDMbdjFhrfXjw",
+    authDomain: "login-87618.firebaseapp.com",
+    projectId: "login-87618",
+    storageBucket: "login-87618.firebasestorage.app",
+    messagingSenderId: "915916987311",
+    appId: "1:915916987311:web:0da484d712d79b50916d5a"
+};
+
+// تهيئة Firebase App
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// حالة التطبيق
+const AppState = {
+    isProcessing: false,
+    lastSession: null,
+    autoLoginAttempted: false
+};
+
+// ثوابت التطبيق
+const Constants = {
+    GRADE_PAGES: {
+        "1 إعدادي": "prep-1.html",
+        "2 إعدادي": "prep-2.html",
+        "3 إعدادي": "prep-3.html",
+        "1 ثانوي": "sec-1.html",
+        "2 ثانوي": "sec-2.html",
+        "3 ثانوي": "sec-3.html"
+    },
+    VALIDATION: {
+        ID_REGEX: /^\d{4}$/,
+        PHONE_REGEX: /^(010|011|012|015)\d{8}$/,
+        MIN_PASSWORD_LENGTH: 4
+    }
+};
+
+// DOM Elements
+const Elements = {
+    // Inputs
+    loginID: document.getElementById('loginID'),
+    loginPass: document.getElementById('loginPass'),
+    forgetName: document.getElementById('forgetName'),
+    forgetPhone: document.getElementById('forgetPhone'),
+    
+    // Buttons
+    passwordToggle: document.getElementById('passwordToggle'),
+    loginBtn: document.getElementById('loginBtn'),
+    forgotBtn: document.getElementById('forgotBtn'),
+    recoveryBtn: document.getElementById('recoveryBtn'),
+    cancelAutoLogin: document.getElementById('cancelAutoLogin'),
+    
+    // Sections
+    autoLoginOverlay: document.getElementById('autoLoginOverlay'),
+    sessionInfo: document.getElementById('sessionInfo'),
+    recoverySection: document.getElementById('recoverySection'),
+    
+    // Messages
+    loginMessage: document.getElementById('loginMessage'),
+    recoveryMsg: document.getElementById('recoveryMsg'),
+    
+    // Loaders
+    loginLoader: document.getElementById('loginLoader'),
+    recoveryLoader: document.getElementById('recoveryLoader')
+};
+
+// عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    initApp();
+});
+
+// تهيئة التطبيق
+async function initApp() {
+    setupEventListeners();
+    await testConnection();
+    
+    // محاولة الدخول التلقائي
+    await attemptAutoLogin();
+}
+
+// محاولة الدخول التلقائي
+async function attemptAutoLogin() {
+    try {
+        const studentData = localStorage.getItem("loggedStudent");
+        if (!studentData) {
+            hideAutoLoginOverlay();
+            return;
+        }
+
+        const data = JSON.parse(studentData);
+        if (!data.id || !data.password) {
+            localStorage.removeItem("loggedStudent");
+            hideAutoLoginOverlay();
+            return;
+        }
+
+        AppState.lastSession = data;
+        AppState.autoLoginAttempted = true;
+
+        // إظهار شاشة الدخول التلقائي
+        showAutoLoginOverlay();
+
+        // الانتظار 1.5 ثانية لإظهار الرسالة
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // تجربة الدخول باستخدام البيانات المحفوظة
+        const studentRef = db.collection("students").doc(data.id);
+        const docSnap = await studentRef.get();
+
+        if (!docSnap.exists) {
+            localStorage.removeItem("loggedStudent");
+            showAutoLoginError();
+            return;
+        }
+
+        const student = docSnap.data();
+        
+        // التحقق من كلمة المرور
+        if (student.password !== data.password) {
+            localStorage.removeItem("loggedStudent");
+            showAutoLoginError();
+            return;
+        }
+
+        // تحديث آخر دخول
+        await studentRef.update({
+            lastLogin: new Date().toISOString(),
+            loginCount: (student.loginCount || 0) + 1
+        });
+
+        // إظهار رسالة النجاح
+        showAutoLoginSuccess();
+        
+        // الانتظار 1 ثانية ثم التوجيه
+        setTimeout(() => {
+            redirectToGradePage(student.grade);
+        }, 1000);
+
+    } catch (error) {
+        console.error('Auto-login error:', error);
+        showAutoLoginError();
+    }
+}
+
+// إظهار شاشة الدخول التلقائي
+function showAutoLoginOverlay() {
+    if (Elements.autoLoginOverlay) {
+        Elements.autoLoginOverlay.style.display = 'flex';
+        setTimeout(() => {
+            Elements.autoLoginOverlay.style.opacity = '1';
+        }, 10);
+    }
+}
+
+// إخفاء شاشة الدخول التلقائي
+function hideAutoLoginOverlay() {
+    if (Elements.autoLoginOverlay) {
+        Elements.autoLoginOverlay.style.opacity = '0';
+        setTimeout(() => {
+            Elements.autoLoginOverlay.style.display = 'none';
+        }, 500);
+    }
+}
+
+// إظهار خطأ في الدخول التلقائي
+function showAutoLoginError() {
+    const content = Elements.autoLoginOverlay.querySelector('.auto-login-content');
+    if (content) {
+        content.innerHTML = `
+            <div class="auto-login-logo" style="color: var(--error);">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="auto-login-text">
+                <h3 style="color: var(--error); margin-bottom: 10px;">فشل الدخول التلقائي</h3>
+                <p style="color: var(--gray);">بيانات الجلسة غير صالحة، يرجى تسجيل الدخول يدوياً</p>
+            </div>
+            <button class="cancel-auto-login" onclick="hideAutoLoginOverlay()" style="background: var(--error); color: white;">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول يدوياً
+            </button>
+        `;
+        
+        setTimeout(hideAutoLoginOverlay, 3000);
+    }
+}
+
+// إظهار نجاح الدخول التلقائي
+function showAutoLoginSuccess() {
+    const content = Elements.autoLoginOverlay.querySelector('.auto-login-content');
+    if (content) {
+        content.innerHTML = `
+            <div class="auto-login-logo" style="color: var(--success);">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="auto-login-text">
+                <h3 style="color: var(--success); margin-bottom: 10px;">تم الدخول بنجاح!</h3>
+                <p style="color: var(--gray);">جاري تحويلك إلى الصفحة المخصصة لك</p>
+            </div>
+        `;
+    }
+}
+
+// إعداد مستمعي الأحداث
+function setupEventListeners() {
+    // زر إظهار/إخفاء كلمة المرور
+    Elements.passwordToggle.addEventListener('click', togglePassword);
+    
+    // زر تسجيل الدخول
+    Elements.loginBtn.addEventListener('click', handleLogin);
+    
+    // زر نسيت كلمة المرور
+    Elements.forgotBtn.addEventListener('click', toggleRecovery);
+    
+    // زر استرجاع كلمة المرور
+    Elements.recoveryBtn.addEventListener('click', handleRecovery);
+    
+    // زر إلغاء الدخول التلقائي
+    if (Elements.cancelAutoLogin) {
+        Elements.cancelAutoLogin.addEventListener('click', hideAutoLoginOverlay);
+    }
+    
+    // تفعيل زر Enter
+    Elements.loginPass.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+    
+    Elements.forgetPhone.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleRecovery();
+    });
+    
+    // مسح الأخطاء عند الكتابة
+    setupInputValidation();
+}
+
+// إعداد التحقق من المدخلات
+function setupInputValidation() {
+    const inputIds = ['loginID', 'loginPass', 'forgetName', 'forgetPhone'];
+    
+    inputIds.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', function() {
+                this.classList.remove('shake');
+                if (id.includes('login')) {
+                    hideMessage('loginMessage');
+                } else {
+                    hideMessage('recoveryMsg');
+                }
+            });
+        }
+    });
+}
+
+// ====== إدارة كلمة المرور ======
+function togglePassword() {
+    const passwordField = Elements.loginPass;
+    const toggleIcon = Elements.passwordToggle.querySelector('i');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// ====== إدارة قسم الاسترجاع ======
+function toggleRecovery() {
+    Elements.recoverySection.classList.toggle('show');
+    
+    if (Elements.recoverySection.classList.contains('show')) {
+        setTimeout(() => Elements.forgetName.focus(), 300);
+    } else {
+        resetRecoveryForm();
+    }
+}
+
+function resetRecoveryForm() {
+    Elements.forgetName.value = '';
+    Elements.forgetPhone.value = '';
+    hideMessage('recoveryMsg');
+}
+
+// ====== التحقق من المدخلات ======
+function validateLoginInputs() {
+    const id = Elements.loginID.value.trim();
+    const pass = Elements.loginPass.value.trim();
+    let isValid = true;
+
+    // التحقق من المعرف
+    if (!id) {
+        showInputError('loginID', 'يجب إدخال المعرف');
+        isValid = false;
+    } else if (!Constants.VALIDATION.ID_REGEX.test(id)) {
+        showInputError('loginID', 'المعرف يجب أن يكون 4 أرقام');
+        isValid = false;
+    }
+
+    // التحقق من كلمة المرور
+    if (!pass) {
+        showInputError('loginPass', 'يجب إدخال كلمة المرور');
+        isValid = false;
+    } else if (pass.length < Constants.VALIDATION.MIN_PASSWORD_LENGTH) {
+        showInputError('loginPass', 'كلمة المرور قصيرة جداً');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function validateRecoveryInputs() {
+    const name = Elements.forgetName.value.trim();
+    const phone = Elements.forgetPhone.value.trim();
+    let isValid = true;
+
+    // التحقق من الاسم
+    if (!name || name.split(" ").length < 3) {
+        showMessage('recoveryMsg', '❌ الرجاء إدخال الاسم الثلاثي كاملاً', 'error');
+        isValid = false;
+    }
+
+    // التحقق من رقم الهاتف
+    if (!Constants.VALIDATION.PHONE_REGEX.test(phone)) {
+        showMessage('recoveryMsg', '❌ رقم الهاتف غير صحيح (يبدأ بـ 010/011/012/015)', 'error');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function showInputError(inputId, message) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.classList.add('shake');
+        showMessage('loginMessage', `❌ ${message}`, 'error');
+        setTimeout(() => {
+            if (input) input.classList.remove('shake');
+        }, 500);
+    }
+}
+
+// ====== تسجيل الدخول ======
+async function handleLogin() {
+    if (AppState.isProcessing) return;
+    
+    // التحقق من المدخلات
+    if (!validateLoginInputs()) return;
+
+    const id = Elements.loginID.value.trim();
+    const pass = Elements.loginPass.value.trim();
+
+    // بدء المعالجة
+    startProcessing('login');
+    
+    try {
+        const studentRef = db.collection("students").doc(id);
+        const docSnap = await studentRef.get();
+
+        if (!docSnap.exists) {
+            showMessage('loginMessage', '❌ المعرف غير مسجل في النظام', 'error');
+            showInputError('loginID', '');
+            return;
+        }
+
+        const data = docSnap.data();
+        await processLoginSuccess(data, studentRef);
+
+    } catch (err) {
+        console.error('Login error:', err);
+        showMessage('loginMessage', '❌ حدث خطأ غير متوقع أثناء تسجيل الدخول', 'error');
+    } finally {
+        stopProcessing('login');
+    }
+}
+
+async function processLoginSuccess(data, studentRef) {
+    const pass = Elements.loginPass.value.trim();
+    
+    // التحقق من كلمة المرور
+    if (data.password !== pass) {
+        showMessage('loginMessage', '❌ كلمة المرور غير صحيحة', 'error');
+        showInputError('loginPass', '');
+        return;
+    }
+
+    // تحديث آخر دخول
+    await updateLastLogin(studentRef, data);
+
+    // حفظ بيانات الجلسة
+    saveSessionData(data);
+
+    // إظهار رسالة النجاح والتوجيه
+    showMessage('loginMessage', '✅ تم تسجيل الدخول بنجاح!', 'success');
+    redirectToGradePage(data.grade);
+
+}
+
+async function updateLastLogin(studentRef, data) {
+    try {
+        await studentRef.update({
+            lastLogin: new Date().toISOString(),
+            loginCount: (data.loginCount || 0) + 1
+        });
+    } catch (error) {
+        console.error('Error updating last login:', error);
+    }
+}
+
+function saveSessionData(data) {
+    const sessionData = {
+        id: data.id,
+        name: data.name,
+        grade: data.grade,
+        studentPhone: data.studentPhone,
+        password: data.password,
+        lastLogin: new Date().toISOString()
+    };
+
+    localStorage.setItem("loggedStudent", JSON.stringify(sessionData));
+}
+
+// ====== استرجاع كلمة المرور ======
+async function handleRecovery() {
+    if (AppState.isProcessing) return;
+    
+    // التحقق من المدخلات
+    if (!validateRecoveryInputs()) return;
+
+    const name = Elements.forgetName.value.trim();
+    const phone = Elements.forgetPhone.value.trim();
+
+    // بدء المعالجة
+    startProcessing('recovery');
+
+    try {
+        const snapshot = await db.collection("students")
+            .where("studentPhone", "==", phone)
+            .get();
+
+        if (snapshot.empty) {
+            showMessage('recoveryMsg', '❌ هذا الرقم غير مسجل في نظامنا', 'error');
+            return;
+        }
+
+        const foundStudent = findMatchingStudent(snapshot, name);
+
+        if (foundStudent) {
+            await displayRecoveryInfo(foundStudent);
+            await updateRecoveryTimestamp(foundStudent);
+            scheduleRecoveryReset();
+        } else {
+            showMessage('recoveryMsg', 
+                '❌ الاسم لا يطابق الرقم المسجل<br><small>تأكد من كتابة الاسم كما سجلته تماماً</small>', 
+                'error'
+            );
+        }
+
+    } catch (err) {
+        console.error('Recovery error:', err);
+        showMessage('recoveryMsg', '❌ حدث خطأ أثناء الاسترجاع', 'error');
+    } finally {
+        stopProcessing('recovery');
+    }
+}
+
+function findMatchingStudent(snapshot, name) {
+    const normalizedInput = name.toLowerCase().replace(/\s+/g, ' ').trim();
+    
+    for (const docSnap of snapshot.docs) {
+        const data = docSnap.data();
+        const normalizedStored = data.name.toLowerCase().replace(/\s+/g, ' ').trim();
+        
+        if (normalizedStored === normalizedInput) {
+            return {
+                ...data,
+                docId: docSnap.id
+            };
+        }
+    }
+    
+    return null;
+}
+
+async function displayRecoveryInfo(studentData) {
+    const passwordHTML = `
+        <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin:10px 0; 
+                   font-family:monospace; text-align:center; font-size:18px; letter-spacing:2px;">
+            ${studentData.password}
+        </div>
+    `;
+
+    const message = `
+        ✅ تم العثور على حسابك
+        <br><br>
+        <strong>👤 الاسم:</strong> ${studentData.name}
+        <br><strong>📚 الصف:</strong> ${studentData.grade}
+        <br><br>
+        🔑 <strong>كلمة المرور:</strong> 
+        ${passwordHTML}
+        <small style="color:gray">⚠️ احفظ كلمة المرور في مكان آمن</small>
+    `;
+
+    showMessage('recoveryMsg', message, 'success');
+}
+
+async function updateRecoveryTimestamp(studentData) {
+    try {
+        const studentRef = db.collection("students").doc(studentData.docId);
+        await studentRef.update({
+            lastPasswordRecovery: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Error updating recovery timestamp:', error);
+    }
+}
+
+function scheduleRecoveryReset() {
+    setTimeout(() => {
+        if (Elements.recoverySection && Elements.recoverySection.classList.contains('show')) {
+            toggleRecovery();
+        }
+    }, 8000);
+}
+
+// ====== إدارة المعالجة ======
+function startProcessing(type) {
+    AppState.isProcessing = true;
+    const button = document.getElementById(type + 'Btn');
+    const loader = document.getElementById(type + 'Loader');
+    
+    if (button) {
+        button.disabled = true;
+        button.classList.add('processing');
+        
+        if (!button.dataset.originalText) {
+            button.dataset.originalText = button.innerHTML;
+        }
+        
+        const tempText = type === 'login' ? 'جاري الدخول...' : 'جاري الاسترجاع...';
+        const icon = button.querySelector('i');
+        button.innerHTML = icon ? `${icon.outerHTML} ${tempText}` : tempText;
+    }
+    
+    if (loader) {
+        loader.style.display = 'inline-block';
+    }
+}
+
+function stopProcessing(type) {
+    AppState.isProcessing = false;
+    const button = document.getElementById(type + 'Btn');
+    const loader = document.getElementById(type + 'Loader');
+    
+    if (button) {
+        button.disabled = false;
+        button.classList.remove('processing');
+        
+        if (button.dataset.originalText) {
+            button.innerHTML = button.dataset.originalText;
+        }
+    }
+    
+    if (loader) {
+        loader.style.display = 'none';
+    }
+}
+
+// ====== أدوات مساعدة ======
+function showMessage(elementId, message, type = 'info') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = message;
+        element.className = `message-box ${type}`;
+        element.style.display = 'block';
+        
+        const hideTime = type === 'success' ? 10000 : 5000;
+        setTimeout(() => {
+            if (element && element.style.display !== 'none') {
+                hideMessage(elementId);
+            }
+        }, hideTime);
+    }
+}
+
+function hideMessage(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.display = 'none';
+        element.innerHTML = '';
+    }
+}
+
+function redirectToGradePage(grade) {
+
+  const fullLinks = {
+    "1 إعدادي": "/prep-1",
+    "2 إعدادي": "/prep-2",
+    "3 إعدادي": "/prep-3",
+    "1 ثانوي": "/sec-1",
+    "2 ثانوي": "/sec-2",
+    "3 ثانوي": "/sec-3"
+  };
+
+  const target = fullLinks[grade];
+
+  if (target) {
+    location.replace(target); // 🚀 الأسرع
+  } else {
+    showMessage('loginMessage', `❌ خطأ في التوجيه - الصف "${grade}" غير مدعوم`, 'error');
+  }
+}
+
+
+// ====== اختبار الاتصال ======
+async function testConnection() {
+    try {
+        const testRef = db.collection("students");
+        const snapshot = await testRef.limit(1).get();
+        console.log("✅ الاتصال بقاعدة البيانات ناجح");
+        console.log("عدد المستندات:", snapshot.size);
+        return true;
+    } catch (error) {
+        console.error("❌ خطأ في الاتصال:", error);
+        showMessage('loginMessage', '❌ خطأ في الاتصال بقاعدة البيانات', 'error');
+        return false;
+    }
+}
+
+
+    </script>
+
+</body>
+</html>
