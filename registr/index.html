@@ -447,12 +447,12 @@ document.addEventListener("DOMContentLoaded", function () {
         function goToGradePage() {
             const grade = localStorage.getItem("lastGrade");
             const pages = {
-                "1 إعدادي": "/prep-1",
-                "2 إعدادي": "/prep-2",
-                "3 إعدادي": "/prep-3",
-                "1 ثانوي": "/sec-1",
-                "2 ثانوي": "/sec-2",
-                "3 ثانوي": "/sec-3"
+                "1 إعدادي": "/prep-1/",
+                "2 إعدادي": "/prep-2/",
+                "3 إعدادي": "/prep-3/",
+                "1 ثانوي": "/sec-1/",
+                "2 ثانوي": "/sec-2/",
+                "3 ثانوي": "/sec-3/"
             };
 
             if (grade && pages[grade]) {
