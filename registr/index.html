@@ -11,7 +11,12 @@
     <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const data = JSON.parse(localStorage.getItem("loggedStudent"));
+  // نحاول نقرأ أي واحد فيهم موجود
+  const loggedStudent = JSON.parse(localStorage.getItem("loggedStudent"));
+  const studentData = JSON.parse(localStorage.getItem("studentData"));
+
+  // نختار الموجود فقط
+  const data = loggedStudent || studentData;
 
   const gradeLinks = {
     "1 إعدادي": "https://mr-alaa.vercel.app/prep-1/",
@@ -22,24 +27,29 @@ document.addEventListener("DOMContentLoaded", function () {
     "3 ثانوي": "https://mr-alaa.vercel.app/sec-3/"
   };
 
-  if (data && data.grade) {
+  if (!data) {
+    console.warn("❌ لا يوجد loggedStudent ولا studentData في localStorage");
+    return;
+  }
 
-    const grade = data.grade.trim();
+  if (!data.grade) {
+    console.warn("❌ لا يوجد grade داخل بيانات الطالب");
+    return;
+  }
 
-    const target = gradeLinks[grade];
+  const grade = data.grade.trim();
+  const target = gradeLinks[grade];
 
-    if (target) {
-      location.replace(target); // 🔥 أسرع توجيه ممكن
-    } else {
-      console.warn("مرحلة غير معروفة:", grade);
-    }
-
+  if (target) {
+    console.log("✅ توجيه الطالب إلى:", target);
+    location.replace(target); // توجيه فوري بدون رجوع
   } else {
-    console.warn("لا يوجد بيانات طالب في التخزين المحلي.");
+    console.warn("⚠️ صف غير معروف:", grade);
   }
 
 });
 </script>
+
 </head>
 <body>
     <div class="page-layout">
@@ -123,6 +133,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <p style="text-align: center; margin-top: 20px; color: var(--gray-text);">
                 لديك حساب بالفعل؟ <a href="#" onclick="checkExistingUser()" style="color: var(--primary-color);">دخول سريع</a>
             </p>
+                            <a href="/login/">تسجيل دخول</a>
+
         </div>
     </div>
 

@@ -153,5 +153,49 @@
   });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // نحاول نقرأ أي واحد فيهم موجود
+  const loggedStudent = JSON.parse(localStorage.getItem("loggedStudent"));
+  const studentData = JSON.parse(localStorage.getItem("studentData"));
+
+  // نختار الموجود فقط
+  const data = loggedStudent || studentData;
+
+  const gradeLinks = {
+    "1 إعدادي": "https://mr-alaa.vercel.app/prep-1/",
+    "2 إعدادي": "https://mr-alaa.vercel.app/prep-2/",
+    "3 إعدادي": "https://mr-alaa.vercel.app/prep-3/",
+    "1 ثانوي": "https://mr-alaa.vercel.app/sec-1/",
+    "2 ثانوي": "https://mr-alaa.vercel.app/sec-2/",
+    "3 ثانوي": "https://mr-alaa.vercel.app/sec-3/"
+  };
+
+  if (!data) {
+    console.warn("❌ لا يوجد loggedStudent ولا studentData في localStorage");
+    return;
+  }
+
+  if (!data.grade) {
+    console.warn("❌ لا يوجد grade داخل بيانات الطالب");
+    return;
+  }
+
+  const grade = data.grade.trim();
+  const target = gradeLinks[grade];
+
+  if (target) {
+    console.log("✅ توجيه الطالب إلى:", target);
+    location.replace(target); // توجيه فوري بدون رجوع
+  } else {
+    console.warn("⚠️ صف غير معروف:", grade);
+  }
+
+});
+</script>
+
+
+
 </body>
 </html>
