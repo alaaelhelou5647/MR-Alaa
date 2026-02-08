@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تشغيل المحاضرة </title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<link rel="icon" href="https://mr-alaa.vercel.app/icone.png">
+
+<style>
+:root {
+  --orange-primary: #FF6B35;
+  --orange-light: #FF8E53;
+  --orange-dark: #E55A2B;
+  --orange-gradient: linear-gradient(135deg, var(--orange-primary) 0%, var(--orange-light) 100%);
+  --math-gradient: linear-gradient(135deg, #E55A2B 0%, #FF6B35 100%);
+  --bg-color: #FEF7F3;
+  --card-bg: #FFFFFF;
+  --text-dark: #50452c;
+  --text-light: #7F8C8D;
+  --shadow: 0 10px 30px rgba(255, 107, 53, 0.15);
+  --shadow-hover: 0 15px 40px rgba(255, 107, 53, 0.25);
+  --radius: 16px;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --error: #e74c3c;
+  --math-color: #e5752b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(74, 144, 226, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(255, 107, 53, 0.05) 0%, transparent 20%);
+  overflow-x: hidden;
+}
+
+/* أنيميشن الرياضيات */
+.math-animation {
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.7;
+}
+
+.math-symbol {
+  position: absolute;
+  color: var(--math-color);
+  font-size: 24px;
+  font-weight: bold;
+  animation: float 15s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* تصميم رأس الصفحة */
+.header-academy {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--orange-primary), var(--math-color));
+  color: white;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-academy::before {
+  content: "α β γ δ ε ζ η θ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: rgba(255,255,255,0.1);
+  font-size: 40px;
+  font-weight: bold;
+  transform: rotate(30deg);
+}
+
+.academy-name {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.teacher-name {
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--orange-primary);
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.back-btn:hover {
+  background-color: var(--orange-primary);
+  color: white;
+  transform: translateX(-5px);
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.box {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 40px;
+  animation: fadeInUp 0.6s ease-out;
+  border-top: 5px solid var(--orange-primary);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 107, 53, 0.1);
+}
+
+.box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--math-gradient);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 2px solid rgba(74, 144, 226, 0.1);
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.show{
+  flex-direction: column;
+}
+
+.lecture-title {
+  font-size: 32px;
+  color: var(--text-dark);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+}
+
+.lecture-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--math-gradient);
+  border-radius: 2px;
+}
+
+.badge {
+  padding: 10px 24px;
+  margin: 30px 0;
+  background: var(--math-gradient);
+  color: white;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-info {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.08), rgba(255, 107, 53, 0.08));
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  border: 1px solid rgba(74, 144, 226, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.student-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(74, 144, 226, 0.1);
+}
+
+.student-info i {
+  color: var(--math-color);
+  font-size: 24px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+}
+
+.info-text {
+  flex: 1;
+  min-width: 150px;
+}
+
+.info-label {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.info-value {
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 16px;
+}
+
+.code-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 3px;
+  background: var(--orange-gradient);
+  border-radius: 1.5px;
+}
+
+.section-title i {
+  color: var(--orange-primary);
+  background: rgba(255, 107, 53, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--math-color);
+  font-size: 20px;
+  z-index: 1;
+}
+
+.code-input {
+  width: 100%;
+  padding: 20px 25px 20px 60px;
+  border: 2px solid rgba(74, 144, 226, 0.2);
+  border-radius: 12px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background-color: #f8fafc;
+  color: var(--text-dark);
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: var(--math-color);
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.15);
+  transform: translateY(-2px);
+}
+
+.code-input::placeholder {
+  color: #95a5a6;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 20px;
+  background: var(--math-gradient);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #e97f1c 0%, #ca7507 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.submit-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+.submit-btn:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(30, 30);
+    opacity: 0;
+  }
+}
+
+.message {
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 25px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+  border-left: 5px solid;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.message.success {
+  background-color: rgba(39, 174, 96, 0.1);
+  color: var(--success);
+  border-left-color: var(--success);
+}
+
+.message.error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--error);
+  border-left-color: var(--error);
+}
+
+.message.warning {
+  background-color: rgba(243, 156, 18, 0.1);
+  color: var(--warning);
+  border-left-color: var(--warning);
+}
+
+.loader {
+  display: none;
+  text-align: center;
+  padding: 25px;
+  color: var(--math-color);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.loader i {
+  margin-left: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.video-section {
+  display: none;
+  margin-top: 40px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  background: #000;
+  margin-bottom: 25px;
+  border: 3px solid white;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-info {
+  margin-top: 25px;
+  padding: 25px;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.05), rgba(255, 107, 53, 0.05));
+  border-radius: 16px;
+  border-right: 5px solid var(--math-color);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.video-info h4 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.video-info h4 i {
+  color: var(--math-color);
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+}
+
+.video-info p {
+  color: var(--text-light);
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+/* قائمة الفيديوهات */
+.videos-list-section {
+  display: none;
+  margin-top: 40px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.videos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.video-item {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.video-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(74, 144, 226, 0.2);
+  border-color: rgba(74, 144, 226, 0.3);
+}
+
+.video-item.active {
+  border-color: var(--math-color);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.05), white);
+  box-shadow: 0 10px 30px rgba(74, 144, 226, 0.25);
+}
+
+.video-item.active::before {
+  content: '▶️ مشغّل حالياً';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--math-color);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.video-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.video-order {
+  background: var(--math-gradient);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+}
+
+.video-title {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  flex: 1;
+  margin-right: 15px;
+  line-height: 1.4;
+}
+
+.video-duration {
+  color: var(--math-color);
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(74, 144, 226, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.video-play-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--math-color);
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: rgba(74, 144, 226, 0.05);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.video-item:hover .video-play-btn {
+  background: rgba(74, 144, 226, 0.1);
+  transform: translateX(-5px);
+}
+
+/* عناصر التنقل */
+.navigation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px solid rgba(74, 144, 226, 0.1);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 30px;
+  background: var(--math-gradient);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.25);
+  min-width: 150px;
+}
+
+.nav-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+}
+
+.nav-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.nav-btn:disabled {
+  background: #ecf0f1;
+  color: #bdc3c7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.nav-btn.prev {
+  background: linear-gradient(135deg, #7f8c8d 0%, #636e72 100%);
+}
+
+.nav-btn.prev:hover:not(:disabled) {
+  background: linear-gradient(135deg, #636e72 0%, #57606f 100%);
+}
+
+.counter {
+  text-align: center;
+  color: var(--text-dark);
+  font-size: 16px;
+  font-weight: 600;
+  background: rgba(74, 144, 226, 0.1);
+  padding: 12px 25px;
+  border-radius: 10px;
+  min-width: 120px;
+}
+
+.counter span {
+  color: var(--math-color);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.help-text {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px dashed rgba(74, 144, 226, 0.2);
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+.help-text a {
+  color: var(--math-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.help-text a:hover {
+  color: var(--orange-primary);
+  text-decoration: none;
+}
+
+.help-text a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background: var(--math-color);
+  transition: width 0.3s ease;
+}
+
+.help-text a:hover::after {
+  width: 100%;
+}
+
+.lecture-img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  border: 4px solid white;
+  transition: transform 0.3s ease;
+}
+
+.header-text {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* مؤشر التقدم */
+.progress-container {
+  width: 100%;
+  height: 6px;
+  background: #ecf0f1;
+  border-radius: 3px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--math-gradient);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+@media (max-width: 992px) {
+  
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+  
+  .lecture-img {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  
+  .lecture-title::after {
+    right: 50%;
+    transform: translateX(50%);
+  }
+  
+  .videos-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+
+  .box {
+    padding: 30px 25px;
+  }
+  
+  .lecture-title {
+    font-size: 28px;
+  }
+  
+  .student-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px 15px;
+  }
+  
+  .videos-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .navigation-controls {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .counter {
+    order: -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding:0px;
+  }
+
+  .header{
+    padding-top: 70px;
+  }
+  
+  .box {
+    padding: 25px 20px;
+  }
+  
+  .lecture-title {
+    font-size: 24px;
+  }
+  
+  .code-input, .submit-btn {
+    padding: 18px;
+  }
+  
+  .nav-btn {
+    padding: 15px 20px;
+    font-size: 15px;
+  }
+  
+  .teacher-name {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .container{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .box{
+    padding: 0;
+  }
+
+  .progress-container{
+    width: 85%;
+    margin: 0 auto;
+  }
+
+  .counter{
+    width: 70%;
+  }
+
+  .nav-btn{
+    width: 40px;
+  }
+
+  .video-info{
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .back-btn{
+    margin: 0;
+    font-size: 10px;
+    position: absolute;
+    top: 20px;
+  }
+
+  .video-section{
+    margin-top: 70px;
+  }
+
+  .section-title{
+    margin-right: 10px;
+  }
+  .videos-list-section{
+   padding: 20px;
+  }
+
+  .help-text{
+    padding: 30px;
+  }
+
+  .student-info{
+    width: 90%;
+    margin: 40px auto;
+  }
+
+  .code-section{
+        width: 90%;
+    margin: 40px auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- أنيميشن رموز الرياضيات -->
+<div class="math-animation" id="mathAnimation"></div>
+
+<div class="header-academy animate__animated animate__fadeInDown">
+  <div class="teacher-name">
+    <i class="fas fa-chalkboard-teacher"></i>
+    مع الأستاذ علاء الحلو - مدرس الرياضيات
+  </div>
+</div>
+
+<div class="container">
+  <div class="box animate__animated animate__fadeInUp">
+    <a href="/" class="back-btn animate__animated animate__fadeInRight">
+      <i class="fas fa-arrow-right"></i>
+      العودة إلى المحاضرات
+    </a>
+
+    <div class="show">
+      <div class="header">
+        <img src="" 
+             id="lectureImage" 
+             class="lecture-img animate__animated animate__zoomIn"
+             alt="صورة المحاضرة">
+        <div class="header-text">
+          <h1 class="lecture-title" id="lectureTitle">جارِ التحميل...</h1>
+          <span class="badge animate__animated animate__pulse animate__infinite" id="subjectBadge">
+            <i class="fas fa-calculator"></i> الرياضيات
+          </span>
+          <div id="videoCountBadge" style="display: none; margin-top: 15px; padding: 8px 20px; background: var(--math-gradient); color: white; border-radius: 20px; font-size: 15px; font-weight: 600;">
+            <i class="fas fa-video"></i> <span id="videoCountText">0 فيديو</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="student-info animate__animated animate__fadeIn">
+        <i class="fas fa-user-graduate"></i>
+        <div class="info-text">
+          <div class="info-label">الطالب</div>
+          <div class="info-value" id="studentName">غير مسجل</div>
+        </div>
+        <div class="info-text">
+          <div class="info-label">الصف</div>
+          <div class="info-value" id="studentGrade">غير محدد</div>
+        </div>
+        <div class="info-text">
+          <div class="info-label">وقت الدخول</div>
+          <div class="info-value" id="currentTime">--:--</div>
+        </div>
+      </div>
+      
+      <div class="code-section" id="codeSection">
+        <h3 class="section-title animate__animated animate__fadeInLeft">
+          <i class="fas fa-key"></i>
+          أدخل كود التفعيل
+        </h3>
+        
+        <div class="input-group animate__animated animate__fadeInRight">
+          <i class="fas fa-ticket-alt input-icon"></i>
+          <input type="text" id="codeInput" class="code-input" 
+                 placeholder="أدخل كود التفعيل المكون من 6 أحرف/أرقام">
+        </div>
+        
+        <button class="submit-btn animate__animated animate__pulse animate__infinite animate__slower" onclick="checkCode()">
+          <i class="fas fa-play-circle"></i>
+          تفعيل وتشغيل المحاضرة
+        </button>
+        
+        <div id="message" class="message"></div>
+        
+        <div id="loader" class="loader">
+          <i class="fas fa-spinner"></i>
+          جارِ التحقق من الكود... ⏳
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم عرض الفيديو والتنقل -->
+    <div id="videoSection" class="video-section">
+      <h3 class="section-title">
+        <i class="fas fa-play-circle"></i>
+        <span id="currentVideoTitle">تشغيل المحاضرة</span>
+      </h3>
+      
+      <div class="video-container">
+        <iframe 
+          id="videoFrame"
+          frameborder="0"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      
+      <!-- شريط التقدم -->
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      
+      <!-- عناصر التنقل -->
+      <div class="navigation-controls">
+  <button id="prevBtn" class="nav-btn prev" onclick="playPreviousVideo()" disabled>
+    <i class="fas fa-arrow-right"></i>
+    السابق
+  </button>
+
+  <div class="counter">
+    <span id="currentVideoNumber">1</span> / <span id="totalVideos">5</span>
+  </div>
+
+  <button id="nextBtn" class="nav-btn next" onclick="playNextVideo()" disabled>
+    التالي
+    <i class="fas fa-arrow-left"></i>
+  </button>
+</div>
+
+      
+      <div class="video-info animate__animated animate__fadeInUp">
+        <h4><i class="fas fa-info-circle"></i> معلومات المحاضرة</h4>
+        <p id="lectureInfo">تم تفعيل المحاضرة بنجاح. يمكنك الآن مشاهدة الفيديو التعليمي.</p>
+      </div>
+    </div>
+    
+    <!-- قسم قائمة الفيديوهات -->
+    <div id="videosListSection" class="videos-list-section">
+      <h3 class="section-title animate__animated animate__fadeInLeft">
+        <i class="fas fa-list"></i>
+        قائمة دروس المحاضرة
+      </h3>
+      
+      <div id="videosList" class="videos-list">
+        <!-- سيتم ملء الفيديوهات هنا عبر JavaScript -->
+      </div>
+    </div>
+    
+    <div class="help-text animate__animated animate__fadeInUp">
+      <i class="fas fa-question-circle"></i>
+      إذا واجهتك أي مشكلة، يرجى <a href="#">الاتصال بالدعم الفني</a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  doc, 
+  updateDoc 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCTLfpSbUAhiKFKE7xAUrQUL5-Lravz9wk",
+  authDomain: "lectures-123.firebaseapp.com",
+  projectId: "lectures-123",
+  storageBucket: "lectures-123.firebasestorage.app",
+  messagingSenderId: "973877461046",
+  appId: "1:973877461046:web:3f592e25dc5cccc2acd897",
+  measurementId: "G-S11P8RK046"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// قراءة اسم المحاضرة من الرابط
+const params = new URLSearchParams(window.location.search);
+const lectureName = decodeURIComponent(params.get("lecture") || "");
+
+// متغيرات عامة
+let currentVideoIndex = 0;
+let videosArray = [];
+let videoLink = "";
+let lectureData = null;
+
+// إنشاء أنيميشن رموز الرياضيات
+function createMathAnimation() {
+  const symbols = ['π', 'θ', 'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'Σ', '∫', '√', '∞', '≈', '≠', '≤', '≥', '±', '×', '÷'];
+  const container = document.getElementById('mathAnimation');
+  
+  for (let i = 0; i < 20; i++) {
+    const symbol = document.createElement('div');
+    symbol.className = 'math-symbol';
+    symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    symbol.style.left = Math.random() * 100 + 'vw';
+    symbol.style.animationDelay = Math.random() * 5 + 's';
+    symbol.style.fontSize = (Math.random() * 20 + 18) + 'px';
+    symbol.style.opacity = Math.random() * 0.5 + 0.3;
+    container.appendChild(symbol);
+  }
+}
+
+// تحديث وقت الدخول
+function updateCurrentTime() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString('ar-EG', { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+  document.getElementById("currentTime").textContent = timeString;
+}
+
+// الحصول على بيانات الطالب
+function getCurrentStudent() {
+  try {
+    let student = localStorage.getItem("loggedStudent");
+    if (student) {
+      const parsed = JSON.parse(student);
+      if (parsed && parsed.name) {
+        return {
+          name: parsed.name,
+          grade: parsed.grade || "غير محدد"
+        };
+      }
+    }
+    
+    student = localStorage.getItem("studentData");
+    if (student) {
+      const parsed = JSON.parse(student);
+      if (parsed && parsed.name) {
+        return {
+          name: parsed.name,
+          grade: parsed.grade || "غير محدد"
+        };
+      }
+    }
+    
+    const studentName = localStorage.getItem("studentName");
+    const studentGrade = localStorage.getItem("studentGrade");
+    
+    if (studentName && studentName !== "غير مسجل") {
+      return {
+        name: studentName,
+        grade: studentGrade || "غير محدد"
+      };
+    }
+  } catch (error) {
+    console.error("خطأ في قراءة بيانات الطالب:", error);
+  }
+  
+  return {
+    name: "غير مسجل",
+    grade: "غير محدد"
+  };
+}
+
+// تحديث معلومات الطالب
+function updateStudentInfo() {
+  const student = getCurrentStudent();
+  document.getElementById("studentName").textContent = student.name;
+  document.getElementById("studentGrade").textContent = student.grade;
+}
+
+// عرض رسالة للمستخدم
+function showMessage(text, type = "info") {
+  const messageEl = document.getElementById("message");
+  messageEl.textContent = text;
+  messageEl.className = `message ${type} animate__animated animate__fadeIn`;
+  messageEl.style.display = 'block';
+  
+  if (type !== "success") {
+    setTimeout(() => {
+      messageEl.style.display = 'none';
+    }, 5000);
+  }
+}
+
+// تحميل بيانات المحاضرة
+async function loadLecture() {
+  if (!lectureName) {
+    showMessage("❌ لم يتم تحديد المحاضرة", "error");
+    return;
+  }
+
+  console.log("🔍 البحث عن المحاضرة:", lectureName);
+
+  try {
+    const q = query(collection(db, "lectures"));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      document.getElementById("lectureTitle").textContent = "لا توجد محاضرات";
+      showMessage("❌ لا توجد محاضرات في قاعدة البيانات", "error");
+      return;
+    }
+
+    let found = false;
+
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      console.log("📋 المحاضرة في قاعدة البيانات:", d.col);
+      
+      const cleanDBName = String(d.col || "").replace(/\s+/g, "").trim().toLowerCase();
+      const cleanURLName = lectureName.replace(/\s+/g, "").trim().toLowerCase();
+      
+      console.log("🔍 مقارنة:", cleanDBName, "مع", cleanURLName);
+      
+      if (cleanDBName === cleanURLName) {
+        found = true;
+        lectureData = d;
+        
+        // حفظ مصفوفة الفيديوهات
+        videosArray = d.videos || [];
+        
+        // حفظ رابط الفيديو الأول افتراضياً
+        if (videosArray.length > 0) {
+          videoLink = videosArray[0].link || "";
+        }
+        
+        console.log("✅ عدد الفيديوهات:", videosArray.length);
+        
+        // تحديث واجهة المستخدم
+        document.getElementById("lectureTitle").textContent = d.col || "المحاضرة";
+        document.getElementById("subjectBadge").textContent = d.subject || "الرياضيات";
+        
+        // تحديث عدد الفيديوهات
+        const videoCount = videosArray.length;
+        if (videoCount > 0) {
+          const badge = document.getElementById("videoCountBadge");
+          badge.style.display = "inline-block";
+          badge.textContent = `${videoCount} فيديو`;
+          badge.className = "animate__animated animate__bounceIn";
+        }
+        
+        // تحديث صورة المحاضرة
+        const imgEl = document.getElementById("lectureImage");
+        if (d.image_link && d.image_link.trim() !== "") {
+          let imgSrc = d.image_link.trim();
+          
+          if (imgSrc.includes("firebasestorage") && !imgSrc.includes("alt=media")) {
+            imgSrc += (imgSrc.includes("?") ? "&" : "?") + "alt=media";
+          }
+          
+          imgEl.src = imgSrc;
+          imgEl.onerror = function() {
+            imgEl.src = "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80";
+          };
+        } else {
+          imgEl.src = "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80";
+        }
+        
+        // تحديث معلومات المحاضرة
+        const lectureInfo = document.getElementById("lectureInfo");
+        if (d.description) {
+          lectureInfo.textContent = d.description;
+        } else {
+          lectureInfo.textContent = `محاضرة   ${d.col} في مادة ${d.subject || "الرياضيات"} مع الأستاذ علاء الحلو`;
+        }
+      }
+    });
+
+    if (!found) {
+      console.log("❌ لم يتم العثور على المحاضرة:", lectureName);
+      document.getElementById("lectureTitle").textContent = "المحاضرة غير موجودة";
+      showMessage("❌ المحاضرة غير موجودة في قاعدة البيانات", "error");
+    }
+
+  } catch (error) {
+    console.error("خطأ في تحميل المحاضرة:", error);
+    showMessage("❌ حدث خطأ في تحميل بيانات المحاضرة", "error");
+  }
+}
+
+// عرض قائمة الفيديوهات
+function displayVideosList() {
+  const videosListEl = document.getElementById("videosList");
+  videosListEl.innerHTML = "";
+  
+  if (!videosArray || videosArray.length === 0) {
+    videosListEl.innerHTML = '<div class="animate__animated animate__fadeIn" style="text-align: center; padding: 30px; color: var(--text-light); background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);"><i class="fas fa-video-slash" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><br>لا توجد فيديوهات متاحة لهذه المحاضرة</div>';
+    return;
+  }
+  
+  // ترتيب الفيديوهات حسب order
+  const sortedVideos = [...videosArray].sort((a, b) => (a.order || 0) - (b.order || 0));
+  
+  sortedVideos.forEach((video, index) => {
+    const videoItem = document.createElement("div");
+    videoItem.className = `video-item animate__animated animate__fadeInUp`;
+    videoItem.style.animationDelay = `${index * 0.1}s`;
+    videoItem.onclick = () => playVideo(index);
+    
+    // استخراج معرف الفيديو من رابط YouTube
+    let videoId = "";
+    if (video.link.includes("watch?v=")) {
+      videoId = video.link.split("watch?v=")[1].split("&")[0];
+    } else if (video.link.includes("youtu.be/")) {
+      videoId = video.link.split("youtu.be/")[1].split("?")[0];
+    }
+    
+    videoItem.innerHTML = `
+      <div class="video-item-header">
+        <div class="video-order">${video.order || index + 1}</div>
+        <div class="video-duration"><i class="fas fa-tv"></i></div>
+      </div>
+      <div class="video-title">${video.title || `درس ${index + 1} في الرياضيات`}</div>
+    `;
+    
+    videosListEl.appendChild(videoItem);
+  });
+  
+  // تحديث معلومات التنقل
+  updateNavigationInfo();
+}
+
+// تشغيل فيديو محدد
+function playVideo(index) {
+  if (index < 0 || index >= videosArray.length) return;
+  
+  // إضافة أنيميشن عند التغيير
+  document.getElementById("videoSection").className = "video-section animate__animated animate__fadeIn";
+  
+  currentVideoIndex = index;
+  const video = videosArray[index];
+  
+  if (!video.link) {
+    showMessage("❌ لا يوجد رابط لهذا الفيديو", "error");
+    return;
+  }
+  
+  // استخراج معرف الفيديو من رابط YouTube
+  let videoId = "";
+  if (video.link.includes("watch?v=")) {
+    videoId = video.link.split("watch?v=")[1].split("&")[0];
+  } else if (video.link.includes("youtu.be/")) {
+    videoId = video.link.split("youtu.be/")[1].split("?")[0];
+  }
+  
+  if (!videoId) {
+    showMessage("❌ رابط الفيديو غير صحيح", "error");
+    return;
+  }
+  
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=1`;
+  document.getElementById("videoFrame").src = embedUrl;
+  
+  // تحديث عنوان الفيديو
+  document.getElementById("currentVideoTitle").textContent = video.title || `الدرس ${index + 1}`;
+  
+  // تحديث العناصر النشطة في القائمة
+  const videoItems = document.querySelectorAll(".video-item");
+  videoItems.forEach((item, i) => {
+    if (i === index) {
+      item.classList.add("active");
+      item.classList.remove("animate__fadeInUp");
+      item.classList.add("animate__pulse");
+    } else {
+      item.classList.remove("active", "animate__pulse");
+    }
+  });
+  
+  // تحديث معلومات التنقل
+  updateNavigationInfo();
+  
+  // تحديث شريط التقدم
+  updateProgressBar();
+  
+  // التمرير إلى قسم الفيديو
+  document.getElementById("videoSection").scrollIntoView({ behavior: "smooth" });
+  
+  // إضافة أنيميشن للأزرار
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  
+  if (!prevBtn.disabled) prevBtn.className = "nav-btn prev animate__animated animate__tada";
+  if (!nextBtn.disabled) nextBtn.className = "nav-btn next animate__animated animate__tada";
+  
+  setTimeout(() => {
+    prevBtn.className = "nav-btn prev";
+    nextBtn.className = "nav-btn next";
+  }, 1000);
+}
+
+// تشغيل الفيديو التالي
+function playNextVideo() {
+  if (currentVideoIndex < videosArray.length - 1) {
+    playVideo(currentVideoIndex + 1);
+  }
+}
+
+// تشغيل الفيديو السابق
+function playPreviousVideo() {
+  if (currentVideoIndex > 0) {
+    playVideo(currentVideoIndex - 1);
+  }
+}
+
+// تحديث معلومات التنقل
+function updateNavigationInfo() {
+  const totalVideos = videosArray.length;
+  
+  if (totalVideos === 0) return;
+  
+  // تحديث الأرقام
+  document.getElementById("currentVideoNumber").textContent = currentVideoIndex + 1;
+  document.getElementById("totalVideos").textContent = totalVideos;
+  
+  // تحديث أزرار التنقل
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  
+  prevBtn.disabled = currentVideoIndex === 0;
+  nextBtn.disabled = currentVideoIndex === totalVideos - 1;
+}
+
+// تحديث شريط التقدم
+function updateProgressBar() {
+  const totalVideos = videosArray.length;
+  if (totalVideos === 0) return;
+  
+  const progress = ((currentVideoIndex + 1) / totalVideos) * 100;
+  const progressBar = document.getElementById("progressBar");
+  progressBar.style.width = `${progress}%`;
+}
+
+// التحقق من الكود
+window.checkCode = async function() {
+  const code = document.getElementById("codeInput").value.trim();
+  const messageEl = document.getElementById("message");
+  const loader = document.getElementById("loader");
+  
+  if (!code) {
+    showMessage("⚠️ الرجاء إدخال كود التفعيل أولاً", "warning");
+    document.getElementById("codeInput").classList.add("animate__animated", "animate__headShake");
+    setTimeout(() => {
+      document.getElementById("codeInput").classList.remove("animate__headShake");
+    }, 1000);
+    document.getElementById("codeInput").focus();
+    return;
+  }
+  
+  if (!lectureName) {
+    showMessage("⚠️ لم يتم تحديد المحاضرة", "error");
+    return;
+  }
+  
+  // إخفاء الرسالة السابقة وإظهار مؤشر التحميل
+  messageEl.style.display = 'none';
+  loader.style.display = 'block';
+  
+  // الحصول على بيانات الطالب
+  const student = getCurrentStudent();
+  const studentName = student.name;
+  const studentGrade = student.grade;
+  
+  try {
+    // البحث عن الكود في collection "codes"
+    const q = query(
+      collection(db, "codes"),
+      where("code", "==", code),
+      where("lectureName", "==", lectureName)
+    );
+    
+    const snap = await getDocs(q);
+    loader.style.display = 'none';
+    
+    if (snap.empty) {
+      // جرب collection "الاكواد" إذا لم يجد في "codes"
+      const q2 = query(
+        collection(db, "الاكواد"),
+        where("code", "==", code),
+        where("lectureName", "==", lectureName)
+      );
+      
+      const snap2 = await getDocs(q2);
+      
+      if (snap2.empty) {
+        showMessage("❌ كود غير صحيح أو ليس مخصص لهذه المحاضرة", "error");
+        return;
+      }
+      
+      // معالجة النتائج من collection "الاكواد"
+      let allowed = false;
+      let codeId = "";
+      let isTrial = false;
+      
+      snap2.forEach(doc => {
+        const d = doc.data();
+        allowed = d.active === true;
+        isTrial = d.trial === true;
+        codeId = doc.id;
+      });
+      
+      if (allowed) {
+        await processSuccessfulCode(codeId, studentName, studentGrade, code, isTrial, "الاكواد");
+      } else {
+        showMessage("❌ هذا الكود تم استخدامه من قبل", "error");
+      }
+      
+    } else {
+      // معالجة النتائج من collection "codes"
+      let allowed = false;
+      let codeId = "";
+      let isTrial = false;
+      
+      snap.forEach(doc => {
+        const d = doc.data();
+        allowed = d.active === true;
+        isTrial = d.trial === true;
+        codeId = doc.id;
+      });
+      
+      if (allowed) {
+        await processSuccessfulCode(codeId, studentName, studentGrade, code, isTrial, "codes");
+      } else {
+        showMessage("❌ هذا الكود تم استخدامه من قبل", "error");
+      }
+    }
+    
+  } catch (error) {
+    console.error("خطأ في التحقق من الكود:", error);
+    loader.style.display = 'none';
+    showMessage("❌ حدث خطأ في التحقق من الكود. يرجى المحاولة مرة أخرى", "error");
+  }
+}
+
+// معالجة الكود الناجح
+async function processSuccessfulCode(codeId, studentName, studentGrade, code, isTrial, collectionName) {
+  showMessage("✅ تم تفعيل المحاضرة بنجاح! جاري تحميل الفيديو...", "success");
+
+  const usageData = {
+    active: false,
+    usedBy: studentName,
+    usedGrade: studentGrade,
+    usedLecture: lectureName,
+    usedCode: code,
+    usedAt: new Date(),
+    userAgent: navigator.userAgent
+  };
+
+  if (isTrial) usageData.trial = false;
+
+  try {
+    await updateDoc(doc(db, collectionName, codeId), usageData);
+
+    // إضافة أنيميشن قبل التبديل
+    document.querySelector(".show").classList.add("animate__animated", "animate__fadeOut");
+    
+    setTimeout(() => {
+      // إخفاء الجزء العلوي
+      document.querySelector(".show").style.display = 'none';
+      
+      // إخفاء فورم الكود
+      document.getElementById("codeSection").style.display = 'none';
+
+      // إظهار الفيديو وقائمة الفيديوهات
+      document.getElementById("videoSection").style.display = 'block';
+      document.getElementById("videosListSection").style.display = 'block';
+      
+      // عرض قائمة الفيديوهات
+      displayVideosList();
+      
+      // تشغيل أول فيديو
+      if (videosArray.length > 0) {
+        playVideo(0);
+      } else {
+        showMessage("❌ لا يوجد فيديوهات متاحة لهذه المحاضرة", "error");
+      }
+
+    }, 800);
+
+  } catch (error) {
+    console.error("خطأ في تحديث الكود:", error);
+    showMessage("⚠️ تم التفعيل ولكن لم يُسجَّل الاستخدام", "warning");
+  }
+}
+
+// التحقق إذا كان الطالب قد استخدم المحاضرة من قبل
+async function checkIfAlreadyUsed() {
+  const student = getCurrentStudent();
+
+  if (!lectureName || !student.name || student.name === "غير مسجل") return;
+
+  try {
+    const q = query(
+      collection(db, "codes"),
+      where("usedBy", "==", student.name),
+      where("usedLecture", "==", lectureName)
+    );
+
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+      console.log("✅ الطالب فعّل المحاضرة من قبل");
+
+      // إخفاء جزء الـ show بالكامل
+      document.querySelector(".show").style.display = 'none';
+      document.getElementById("codeSection").style.display = 'none';
+
+      // إظهار الفيديو وقائمة الفيديوهات
+      document.getElementById("videoSection").style.display = 'block';
+      document.getElementById("videosListSection").style.display = 'block';
+      
+      // عرض قائمة الفيديوهات
+      displayVideosList();
+      
+      // تشغيل أول فيديو
+      if (videosArray.length > 0) {
+        playVideo(0);
+      }
+
+      return;
+    }
+
+  } catch (err) {
+    console.error("خطأ في فحص الاستخدام السابق:", err);
+  }
+}
+
+// السماح بالضغط على Enter لتفعيل الكود
+document.getElementById("codeInput").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    checkCode();
+  }
+});
+
+// التهيئة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', async () => {
+  // إنشاء أنيميشن الرياضيات
+  createMathAnimation();
+  
+  if (lectureName) {
+    document.getElementById("lectureTitle").textContent = lectureName;
+  }
+
+  updateStudentInfo();
+  updateCurrentTime();
+  setInterval(updateCurrentTime, 60000);
+
+  await loadLecture();
+  await checkIfAlreadyUsed();
+});
+
+// إضافة أنيميشن عند تمرير الماوس
+document.addEventListener('mousemove', function(e) {
+  const elements = document.querySelectorAll('.video-item, .nav-btn:not(:disabled), .submit-btn');
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    ) {
+      el.classList.add('animate__animated', 'animate__pulse', 'animate__faster');
+      setTimeout(() => {
+        el.classList.remove('animate__pulse', 'animate__faster');
+      }, 300);
+    }
+  });
+});
+
+
+// 👇 مهم جدًا عشان الأزرار تشتغل مع type="module"
+window.playNextVideo = playNextVideo;
+window.playPreviousVideo = playPreviousVideo;
+window.checkCode = checkCode;
+
+</script>
+
+</body>
+</html>

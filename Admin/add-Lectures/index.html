@@ -325,6 +325,21 @@
         </div>
 
         <div class="form-group">
+            <label for="subject">
+                <i class="fas fa-square-root-alt"></i> المادة
+            </label>
+            <select id="subject">
+                <option value="">اختر المادة</option>
+                <option value="جبر">جبر</option>
+                <option value="هندسه">هندسة</option>
+                <option value="تفاضل وتكامل">تفاضل وتكامل</option>
+                <option value="تفاضل">تفاضل</option>
+                <option value="تكامل">تكامل</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
             <label for="grade"><i class="fas fa-graduation-cap"></i> الصف الدراسي</label>
             <select id="grade">
                 <option value="">اختر الصف الدراسي</option>
@@ -459,6 +474,7 @@
             // التحقق من المدخلات
             const col = document.getElementById("collectionName").value.trim();
             const grade = document.getElementById("grade").value;
+            const subject = document.getElementById("subject").value;
             const paid = document.getElementById("paid").value;
             const price = document.getElementById("price").value || "0";
             const image = document.getElementById("image").value.trim();
@@ -487,6 +503,13 @@
                 document.getElementById("price").focus();
                 return;
             }
+
+            if (!subject) {
+                showResult("⚠️ يرجى اختيار المادة", "error");
+                document.getElementById("subject").focus();
+                return;
+            }
+
 
             const titles = document.getElementsByClassName("vTitle");
             const links = document.getElementsByClassName("vLink");
@@ -535,9 +558,9 @@
                 const code = Math.floor(100000 + Math.random() * 900000).toString();
 
                 // مستند المحاضرة
-                const lectureRef = doc(db, "المحاضرات", col);
+                const lectureRef = doc(db, "lectures", col);
                 // مستند الكود
-                const codeRef = doc(db, "الاكواد", code);
+                const codeRef = doc(db, "codes", code);
 
                 // حفظ البيانات في Firebase
                 await setDoc(lectureRef, {
@@ -545,6 +568,7 @@
                     col: col,
                     videos: videos,
                     grade: grade,
+                    subject: subject,   // ← هنا المادة
                     paid: paid,
                     price: price,
                     image_link: image,
@@ -552,11 +576,15 @@
                     videoCount: videos.length
                 });
 
+
                 await setDoc(codeRef, {
                     code: code,
                     active: true,
+                    image_link: image,
                     createdAt: new Date(),
-                    lectureName: col
+                    lectureName: col,
+                    price: price,
+                    paid: paid,
                 });
 
                 // عرض رسالة النجاح
