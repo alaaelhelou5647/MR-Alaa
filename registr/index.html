@@ -131,9 +131,8 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <p style="text-align: center; margin-top: 20px; color: var(--gray-text);">
-                لديك حساب بالفعل؟ <a href="#" onclick="checkExistingUser()" style="color: var(--primary-color);">دخول سريع</a>
+                لديك حساب بالفعل؟  <a href="/login/" style="color: var(--primary-color);">تسجيل دخول</a>
             </p>
-                            <a href="/login/">تسجيل دخول</a>
 
         </div>
     </div>
@@ -471,18 +470,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = pages[grade];
             } else {
                 showMessage("لم يتم تحديد الصف!", "error");
-            }
-        }
-
-        // التحقق من المستخدم الحالي
-        function checkExistingUser() {
-            const studentId = localStorage.getItem("currentStudentId");
-            if (studentId) {
-                if (confirm("لديك حساب مسجل بالفعل. هل تريد الذهاب إلى صفحتك؟")) {
-                    goToGradePage();
-                }
-            } else {
-                showMessage("لا يوجد حساب مسجل. يرجى التسجيل أولاً.", "error");
             }
         }
 
