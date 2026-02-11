@@ -263,6 +263,19 @@
             text-align: left;
         }
 
+        .old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+}
+
+.new-price {
+    color: #f72525;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -317,10 +330,19 @@
                         <option value="paid">مدفوع</option>
                     </select>
                 </div>
-                <div id="priceField" style="display: none;">
-                    <label for="price"><i class="fas fa-money-bill-wave"></i> السعر (ج.م)</label>
-                    <input type="number" id="price" placeholder="السعر بالجنيه المصري" min="0">
-                </div>
+               <div id="priceField" style="display: none;">
+                    <div class="flex-group">
+                        <div>
+                            <label for="oldPrice">💸 السعر قبل الخصم</label>
+                            <input type="number" id="oldPrice" placeholder="مثال: 150" min="0">
+                        </div>
+                        <div>
+                            <label for="price">🔥 السعر بعد الخصم</label>
+                            <input type="number" id="price" placeholder="مثال: 100" min="0">
+                        </div>
+                    </div>
+               </div>
+
             </div>
         </div>
 
@@ -477,6 +499,7 @@
             const subject = document.getElementById("subject").value;
             const paid = document.getElementById("paid").value;
             const price = document.getElementById("price").value || "0";
+            const oldPrice = document.getElementById("oldPrice").value || "0";
             const image = document.getElementById("image").value.trim();
 
             // التحقق من البيانات المطلوبة
@@ -562,30 +585,33 @@
                 // مستند الكود
                 const codeRef = doc(db, "codes", code);
 
-                // حفظ البيانات في Firebase
-                await setDoc(lectureRef, {
+               await setDoc(lectureRef, {
                     code: code,
                     col: col,
                     videos: videos,
                     grade: grade,
-                    subject: subject,   // ← هنا المادة
+                    subject: subject,
                     paid: paid,
-                    price: price,
+                    price: price,        // السعر بعد الخصم
+                    oldPrice: oldPrice,  // السعر القديم ❗
                     image_link: image,
                     createdAt: new Date(),
                     videoCount: videos.length
                 });
 
 
-                await setDoc(codeRef, {
+
+               await setDoc(codeRef, {
                     code: code,
                     active: true,
                     image_link: image,
                     createdAt: new Date(),
                     lectureName: col,
                     price: price,
+                    oldPrice: oldPrice,   // 👈 مهم
                     paid: paid,
                 });
+
 
                 // عرض رسالة النجاح
                 showResult(`

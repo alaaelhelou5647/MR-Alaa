@@ -227,7 +227,34 @@ body.no-scroll {
 .detail-item .badge{
   color: var(--text-light);
 margin: 10px 0;
+} 
+
+.price-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff3f3;
+  padding: 6px 10px;
+  border-radius: 10px;
 }
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #f72525;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.badge.free {
+  background: #e6fff2;
+  color: #0a7a3d;
+}
+
 
 .button {
   display: block;
