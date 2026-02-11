@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>لوحة تحكم المسار | متجاوب</title>
+    <!-- Font Awesome للايقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts: خط عربي جميل -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: #f0f5fa;
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ===== الشريط الجانبي - متجاوب ===== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0b3d5f 0%, #0a3144 100%);
+            color: white;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        /* للشاشات الصغيرة - الشريط الجانبي يتحول لشريط سفلي أو يختفي مع إظهار قائمة */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 15px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            .logo-area {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+                width: auto;
+            }
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                width: auto;
+                gap: 5px;
+            }
+            .nav-item {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .nav-item i {
+                font-size: 16px;
+            }
+            .nav-item span {
+                display: inline-block;
+            }
+        }
+
+        /* للشاشات الصغيرة جداً (موبايل) */
+        @media (max-width: 480px) {
+            .sidebar {
+                padding: 10px;
+            }
+            .logo-text h2 {
+                font-size: 20px;
+            }
+            .logo-text span {
+                font-size: 11px;
+            }
+            .nav-item {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+            .nav-item i {
+                margin-left: 5px;
+            }
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        @media (max-width: 768px) {
+            .logo-area {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            color: #ffc107;
+        }
+
+        .logo-text h2 {
+            font-weight: 700;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .logo-text span {
+            font-size: 14px;
+            color: #b0d4ed;
+            font-weight: 400;
+        }
+
+        .nav-links {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                flex: 0;
+                flex-direction: row;
+            }
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            color: #e0f0ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .nav-item i {
+            width: 22px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #1f6e8c;
+            color: white;
+            padding-right: 25px;
+        }
+        .nav-item.active {
+            background-color: #ffc107;
+            color: #0b3d5f;
+            font-weight: 700;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .nav-item.active i {
+            color: #0b3d5f;
+        }
+
+        @media (max-width: 480px) {
+            .nav-item {
+                gap: 8px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .nav-item i {
+                width: 18px;
+                font-size: 16px;
+            }
+        }
+
+        /* ===== المحتوى الرئيسي - متجاوب ===== */
+        .main-content {
+            flex: 1;
+            padding: 25px 35px;
+            overflow-y: auto;
+            background-color: #f9fcff;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+        }
+
+        /* الهيدر */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a3144;
+        }
+        .page-title p {
+            color: #4a6f8a;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 24px;
+            }
+            .page-title p {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title h1 {
+                font-size: 20px;
+            }
+            .page-title p {
+                font-size: 13px;
+            }
+        }
+
+        /* ===== بطاقات الروابط السريعة - متجاوبة ===== */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 22px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 480px) {
+            .quick-links {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .link-card {
+            background: white;
+            padding: 22px 20px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,50,80,0.05);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: 0.2s;
+            border: 1px solid #ebf3f8;
+            text-decoration: none;
+            color: inherit;
+        }
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 18px 35px rgba(11,61,95,0.1);
+            border-color: #b8d9e6;
+        }
+
+        @media (max-width: 480px) {
+            .link-card {
+                padding: 18px;
+            }
+        }
+
+        .card-icon {
+            width: 55px;
+            height: 55px;
+            background: #e7f1f7;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f5270;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+        }
+
+        .card-text h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a3144;
+        }
+        .card-text small {
+            color: #4f6f8a;
+            font-size: 14px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* ===== قسم إضافي للطلاب والأكواد - متجاوب ===== */
+        .students-codes-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .students-codes-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 24px;
+            padding: 22px 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+            border: 1px solid #ebf3f8;
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .section-card {
+                padding: 18px;
+            }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b3d5f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .section-header h3 {
+                font-size: 18px;
+            }
+        }
+
+        .link-list {
+            list-style: none;
+        }
+        .link-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eef6fa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .link-list li:last-child {
+            border-bottom: none;
+        }
+        .link-list a {
+            text-decoration: none;
+            color: #2a4f66;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            transition: 0.1s;
+            flex: 1;
+        }
+        .link-list a:hover {
+            color: #0b3d5f;
+            font-weight: 500;
+        }
+        .link-list i {
+            color: #197b9b;
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .link-list a {
+                font-size: 14px;
+                gap: 8px;
+            }
+            .link-list li {
+                padding: 10px 0;
+            }
+        }
+
+        .badge {
+            background: #e6f3fa;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #0b3d5f;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .badge {
+                font-size: 11px;
+                padding: 3px 8px;
+            }
+        }
+
+        /* ===== روابط إضافية - متجاوبة ===== */
+        .resources-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+            background: #e5f2f9;
+            padding: 22px 30px;
+            border-radius: 28px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 768px) {
+            .resources-row {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .resources-row {
+                padding: 18px;
+                border-radius: 20px;
+            }
+        }
+
+        .resources-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .resources-links {
+                gap: 15px;
+            }
+        }
+
+        .resources-links a {
+            color: #0b3d5f;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .resources-links a {
+                font-size: 14px;
+            }
+        }
+
+        /* تذييل الصفحة */
+        .footer-note {
+            margin-top: 45px;
+            text-align: center;
+            color: #5c7f91;
+            font-size: 15px;
+            border-top: 1px solid #cbe0ea;
+            padding-top: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .footer-note {
+                font-size: 13px;
+                margin-top: 30px;
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== الشريط الجانبي المتجاوب ===== -->
+    <div class="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-road"></i></div>
+            <div class="logo-text">
+                <h2>مسار</h2>
+                <span>مستر علاء الحلو</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-tachometer-alt"></i> <span>لوحة التحكم</span>
+            </a>
+            <a href="students/" class="nav-item">
+                <i class="fas fa-chalkboard-teacher"></i> <span>الطلاب</span>
+            </a>
+            <a href="cods/" class="nav-item">
+                <i class="fas fa-file-alt"></i> <span>الاكود</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== المحتوى الرئيسي المتجاوب ===== -->
+    <div class="main-content">
+        <!-- الهيدر -->
+        <div class="header">
+            <div class="page-title">
+                <h1>لوحة تحكم المسار</h1>
+                <p><i class="fas fa-map-signs" style="color: #0f6e8c;"></i> جميع الروابط واللنكات المهمة في مكان واحد</p>
+            </div>
+        </div>
+
+        <!-- بطاقات الروابط السريعة -->
+        <div class="quick-links">
+            <a href="students/" class="link-card">
+                <div class="card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="card-text">
+                    <h4>الطلاب</h4>
+                    <small>إدارة الطلاب</small>
+                </div>
+            </a>
+            <a href="cods/" class="link-card">
+                <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="card-text">
+                    <h4>الاكود</h4>
+                    <small>أكواد التسجيل</small>
+                </div>
+            </a>
+        </div>
+ <!--
+         قسم الطلاب والأكواد - متجاوب 
+        <div class="students-codes-section">
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h3><i class="fas fa-chalkboard-teacher" style="color: #0f6e8c;"></i> روابط الطلاب</h3>
+                    <a href="#" class="badge" style="text-decoration: none;">عرض الكل</a>
+                </div>
+                <ul class="link-list">
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> تسجيل حضور الطلاب</a>
+                        <span class="badge">رابط مباشر</span>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> قائمة الفصول</a>
+                        <span class="badge">6 فصول</span>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> تقارير الأداء</a>
+                        <span class="badge">شهري</span>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> تواصل مع أولياء الأمور</a>
+                        <span class="badge">رسائل</span>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h3><i class="fas fa-file-alt" style="color: #0f6e8c;"></i> روابط الأكواد</h3>
+                    <a href="#" class="badge" style="text-decoration: none;">توليد كود</a>
+                </div>
+                <ul class="link-list">
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> أكواد تسجيل الطلاب</a>
+                        <span class="badge">MASSAR-001</span>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> أكواد الاختبارات</a>
+                        <span class="badge">TEST-2025</span>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> أكواد تفعيل الحسابات</a>
+                        <span class="badge">ACT-123</span>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-chevron-left"></i> أكواد الفصول الافتراضية</a>
+                        <span class="badge">CLASS-05</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="resources-row">
+            <span style="font-weight: 700; color: #0b3d5f; font-size: 18px;"><i class="fas fa-link"></i> روابط سريعة:</span>
+            <div class="resources-links">
+                <a href="#"><i class="fas fa-user-graduate"></i> الطلاب الجدد</a>
+                <a href="#"><i class="fas fa-qrcode"></i> مسح كود</a>
+                <a href="#"><i class="fas fa-file-export"></i> تصدير الأكواد</a>
+                <a href="#"><i class="fas fa-print"></i> طباعة التقارير</a>
+            </div>
+        </div>
+
+        -->
+
+        <!-- تذييل الصفحة -->
+        <div class="footer-note">
+            <i class="fas fa-road"></i> منصة مسار التعليمية © 2025 - جميع الروابط تجريبية - تصميم متجاوب بالكامل
+        </div>
+    </div>
+</body>
+</html>

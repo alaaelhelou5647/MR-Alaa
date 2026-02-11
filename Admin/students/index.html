@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقات الطلاب · ديناميكي وقابل للبحث</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f3f7fc 0%, #e9f0f5 100%);
+            padding: 30px 20px;
+            color: #1a2e40;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* header مع بحث احترافي */
+        .header-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 60px;
+            box-shadow: 0 10px 25px rgba(0,30,50,0.06);
+            border: 1px solid rgba(255,107,53,0.2);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #0b2f47;
+        }
+        .title i {
+            color: #ff6b35;
+            font-size: 2.2rem;
+        }
+
+        /* search bar professional */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 50px;
+            padding: 5px 5px 5px 20px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.03);
+            border: 1px solid #e2eaf0;
+            min-width: 300px;
+        }
+        .search-wrapper i {
+            color: #ff8a5c;
+            font-size: 1.2rem;
+        }
+        #searchInput {
+            border: none;
+            padding: 12px 12px;
+            font-size: 1.1rem;
+            font-family: 'Tajawal', sans-serif;
+            background: transparent;
+            width: 100%;
+            outline: none;
+            color: #1e3a5f;
+        }
+        #searchInput::placeholder {
+            color: #9aaec2;
+            font-weight: 400;
+        }
+        .search-btn {
+            background: #ff6b35;
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        .search-btn:hover {
+            background: #e5551e;
+            transform: scale(0.98);
+        }
+
+        /* عداد الطلاب */
+        .stats {
+            background: white;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #1e4c6b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid #ffdac9;
+        }
+        .stats i {
+            color: #ff6b35;
+            margin-left: 6px;
+        }
+
+        /* ===== CARDS GRID – نظام الكروت ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+            gap: 28px;
+            margin-top: 20px;
+        }
+
+        /* كارت الطالب - تصميم أنيق وحديث */
+        .student-card {
+            background: white;
+            border-radius: 32px;
+            padding: 0;
+            box-shadow: 0 16px 30px -8px rgba(0, 55, 80, 0.12);
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            animation: cardFade 0.4s;
+        }
+
+        @keyframes cardFade {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .student-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 45px -10px rgba(255, 107, 53, 0.25);
+            border-color: #ffb095;
+        }
+
+        /* الشريط العلوي الملون – هوية الطالب */
+        .card-header {
+            background: linear-gradient(135deg, #ff6b35, #ff8e5a);
+            padding: 18px 22px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-code {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(2px);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .student-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        /* محتوى الكارد */
+        .card-body {
+            padding: 22px 22px 20px;
+            background: white;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 14px;
+            border-bottom: 1px dashed #edf2f7;
+            padding-bottom: 10px;
+        }
+
+        .info-icon {
+            width: 34px;
+            height: 34px;
+            background: #fff4ed;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6b35;
+            margin-left: 12px;
+            font-size: 1rem;
+        }
+
+        .info-text {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.78rem;
+            color: #6e8898;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: #1b3a4e;
+            font-size: 1.1rem;
+        }
+
+        /* هاتف بشكل احترافي */
+        .phone-badge {
+            background: #eef9ff;
+            padding: 8px 14px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            direction: ltr;
+            color: #0c5e7a;
+            margin-top: 5px;
+        }
+
+        .parent-phone {
+            background: #fff8e7;
+            color: #8a6e4b;
+            padding: 8px 14px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        /* footer الكارد لآخر تسجيل */
+        .card-footer {
+            background: #fafdff;
+            padding: 16px 22px;
+            border-top: 1px solid #f0f4fa;
+            display: flex;
+            justify-content: space-between;
+            color: #4f6f8f;
+            font-size: 0.85rem;
+        }
+
+        /* رسالة عدم وجود نتائج */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 60px;
+            font-size: 1.5rem;
+            color: #526e82;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.02);
+        }
+
+        /* التفاصيل المنبثقة - بطاقة detail أنيقة (تظهر فوق) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 48px;
+            max-width: 550px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 40px 70px rgba(0,0,0,0.2);
+            animation: modalPop 0.3s;
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .detail-header {
+            background: linear-gradient(145deg, #1e3d58, #153243);
+            padding: 26px 30px;
+            color: white;
+            border-radius: 48px 48px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.6rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .close-btn:hover {
+            background: #ff6b35;
+        }
+
+        .detail-body {
+            padding: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e6ecf0;
+            padding-bottom: 15px;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            min-width: 140px;
+            color: #1e4a5f;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #263b4a;
+        }
+
+        /* التجاوب مع الجوال */
+        @media (max-width: 700px) {
+            .header-section { flex-direction: column; gap: 15px; border-radius: 30px; }
+            .search-wrapper { width: 100%; }
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- رأس الصفحة مع البحث والعداد -->
+        <div class="header-section">
+            <div class="title">
+                <i class="fas fa-id-card"></i>
+                <span> الطلاب</span>
+            </div>
+            
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم، الكود، الصف، المحافظة..." autocomplete="off">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-filter"></i> بحث
+                </button>
+            </div>
+            
+            <div class="stats">
+                <i class="fas fa-users"></i>
+                <span id="studentCount">0</span> طالب
+            </div>
+        </div>
+
+        <!-- شبكة الكروت - كل طالب ببطاقة مستقلة -->
+        <div id="cardsContainer" class="cards-grid"></div>
+
+        <!-- مودال تفاصيل الطالب (تظهر عند ضغط الكارت) -->
+        <div id="detailModal" class="modal-overlay" onclick="if(event.target===this) closeModal()">
+            <div class="detail-card">
+                <div class="detail-header">
+                    <h2 style="font-size: 1.8rem; margin:0;">📋 ملف الطالب</h2>
+                    <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="detail-body" id="modalDetailContent">
+                    <!-- يتم تعبئته ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 🔥 Firebase Configuration ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB-L6uhazoGVYg2lkphimDMbdjFhrfXjw",
+            authDomain: "login-87618.firebaseapp.com",
+            projectId: "login-87618",
+            storageBucket: "login-87618.firebasestorage.app",
+            messagingSenderId: "915916987311",
+            appId: "1:915916987311:web:0da484d712d79b50916d5a"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ---------- عناصر الواجهة ----------
+        const cardsContainer = document.getElementById('cardsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const studentCountSpan = document.getElementById('studentCount');
+        
+        // مخزن جميع الطلاب (للتصفية الفورية)
+        let allStudents = [];
+
+        // ---------- دوال مساعدة للتنسيق ----------
+        function formatDate(timestamp) {
+            if (!timestamp) return 'غير مسجل';
+            try {
+                if (timestamp.toDate) {
+                    const date = timestamp.toDate();
+                    return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+                }
+                return timestamp.toString();
+            } catch (e) {
+                return timestamp || '—';
+            }
+        }
+
+        function safeValue(value, fallback = '—') {
+            return (value !== undefined && value !== null && value !== '') ? value : fallback;
+        }
+
+        // ---------- عرض جميع الكروت بناءً على مصفوفة students ----------
+        function renderCards(studentsArray) {
+            if (!studentsArray || studentsArray.length === 0) {
+                cardsContainer.innerHTML = `<div class="no-results">
+                    <i class="fas fa-user-slash" style="font-size: 3rem; margin-bottom: 15px; display: block; color: #b6ccd9;"></i>
+                    🧑‍🎓 لا يوجد طلاب مطابقين للبحث
+                </div>`;
+                studentCountSpan.innerText = '0';
+                return;
+            }
+
+            // بناء كروت HTML
+            let cardsHTML = '';
+            studentsArray.forEach(s => {
+                // استخراج البيانات مع قيم افتراضية
+                const code = safeValue(s.id || s._firestoreId || '——');
+                const name = safeValue(s.name);
+                const grade = safeValue(s.grade);
+                const gov = safeValue(s.governorate);
+                const studentPhone = safeValue(s.studentPhone);
+                const parentPhone = safeValue(s.parentPhone);
+                const lastLogin = formatDate(s.lastLogin);
+                const createdAt = formatDate(s.createdAt);
+
+                // تصميم الكارت - كل طالب في كارد أنيق
+                cardsHTML += `
+                    <div class="student-card" onclick='openDetailModal(${JSON.stringify(encodeStudentData(s))})'>
+                        <div class="card-header">
+                            <span class="student-code"><i class="fas fa-qrcode"></i> ${code}</span>
+                            <span style="background: rgba(0,0,0,0.1); padding: 6px 12px; border-radius: 40px;"><i class="fas fa-graduation-cap"></i> ${grade}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="student-name">${name}</div>
+                            
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="info-text">
+                                    <span class="info-label">المحافظة</span>
+                                    <div class="info-value">${gov}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="info-text">
+                                    <span class="info-label">هاتف الطالب</span>
+                                    <div class="phone-badge" dir="ltr">📞 ${studentPhone}</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+                                <span class="parent-phone"><i class="fas fa-family"></i> ولي الأمر: ${parentPhone}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span><i class="far fa-clock"></i> آخر ظهور: ${lastLogin}</span>
+                            <span><i class="far fa-calendar-alt"></i> التسجيل: ${createdat}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cardsContainer.innerHTML = cardsHTML;
+            studentCountSpan.innerText = studentsArray.length;
+        }
+
+        // مساعد لترميز بيانات الطالب لتجنب مشكلة JSON (لأن Firebase Timestamp لا يتحول عادي)
+        function encodeStudentData(s) {
+            const encoded = {};
+            Object.keys(s).forEach(key => {
+                if (s[key] && typeof s[key] === 'object' && s[key].toDate) {
+                    encoded[key] = formatDate(s[key]);  // نرسله كـ string
+                } else {
+                    encoded[key] = s[key];
+                }
+            });
+            // نضيف id مستقر
+            encoded._displayCode = s.id || s._firestoreId || '';
+            return encoded;
+        }
+
+        // ---------- فتح المودال بالتفاصيل الكاملة ----------
+        window.openDetailModal = function(studentData) {
+            const modal = document.getElementById('detailModal');
+            const contentDiv = document.getElementById('modalDetailContent');
+            
+            // بناء تفاصيل احترافية
+            contentDiv.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="background: #faf0ed; padding: 20px; border-radius: 28px; text-align: center;">
+                        <div style="font-size: 2.5rem; margin-bottom: 5px;">🧑‍🎓</div>
+                        <div style="font-weight: 800; font-size: 1.9rem; color: #0f3448;">${safeValue(studentData.name)}</div>
+                        <div style="background: #ff6b35; color: white; padding: 8px 20px; border-radius: 60px; display: inline-block; margin-top: 10px; font-weight: 700;">كود: ${safeValue(studentData._displayCode || studentData.id)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-book-open" style="margin-left: 8px;"></i> الصف</span>
+                        <span class="detail-value">${safeValue(studentData.grade)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-location-dot"></i> المحافظة</span>
+                        <span class="detail-value">${safeValue(studentData.governorate)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-phone"></i> هاتف الطالب</span>
+                        <span class="detail-value" dir="ltr">${safeValue(studentData.studentPhone)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-users"></i> هاتف ولي الأمر</span>
+                        <span class="detail-value" dir="ltr">${safeValue(studentData.parentPhone)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-history"></i> آخر تسجيل دخول</span>
+                        <span class="detail-value">${formatDate(studentData.lastLogin)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-credit-card"></i> تاريخ الإنشاء</span>
+                        <span class="detail-value">${formatDate(studentData.createdAt)}</span>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        // إغلاق المودال
+        window.closeModal = function() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // ---------- وظيفة البحث الذكي (فلترة الكروت) ----------
+        function filterStudents(searchTerm) {
+            if (!searchTerm.trim()) {
+                return allStudents;  // إذا كان البحث فارغاً أرجع كل الطلاب
+            }
+            const term = searchTerm.trim().toLowerCase();
+            
+            return allStudents.filter(s => {
+                // بحث في عدة حقول
+                const idMatch = (s.id && s.id.toString().toLowerCase().includes(term)) || (s._firestoreId && s._firestoreId.toLowerCase().includes(term));
+                const nameMatch = s.name && s.name.toLowerCase().includes(term);
+                const gradeMatch = s.grade && s.grade.toString().toLowerCase().includes(term);
+                const govMatch = s.governorate && s.governorate.toLowerCase().includes(term);
+                const studentPhoneMatch = s.studentPhone && s.studentPhone.includes(term);
+                return idMatch || nameMatch || gradeMatch || govMatch || studentPhoneMatch;
+            });
+        }
+
+        // تطبيق البحث وعرض الكروت المفلترة
+        function applySearch() {
+            const filtered = filterStudents(searchInput.value);
+            renderCards(filtered);
+        }
+
+        // ---------- تحميل البيانات من Firebase ----------
+        db.collection("students").get()
+            .then((snapshot) => {
+                if (snapshot.empty) {
+                    cardsContainer.innerHTML = `<div class="no-results"><i class="fas fa-database" style="font-size:3rem;"></i><br>لا يوجد طلاب في القاعدة</div>`;
+                    studentCountSpan.innerText = '0';
+                    return;
+                }
+
+                // تحويل لكل طالب مع الاحتفاظ بمعرف الوثيقة
+                allStudents = [];
+                snapshot.forEach(doc => {
+                    const s = doc.data();
+                    s._firestoreId = doc.id;   // حفظ id الوثيقة
+                    allStudents.push(s);
+                });
+
+                // ترتيب حسب الاسم أبجدياً (خيار احترافي)
+                allStudents.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+                
+                // عرض كل الطلاب في البداية
+                renderCards(allStudents);
+            })
+            .catch((error) => {
+                console.error("🔥 خطأ في التحميل:", error);
+                cardsContainer.innerHTML = `<div class="no-results" style="color:#c44545;">
+                    <i class="fas fa-exclamation-triangle"></i> فشل الاتصال بقاعدة البيانات: ${error.message}
+                </div>`;
+            });
+
+        // ---------- Event listeners للبحث ----------
+        searchBtn.addEventListener('click', applySearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                applySearch();
+            }
+        });
+
+        // خاصية البحث الفوري (اختياري - إلغاء التأخير)
+        let debounceTimer;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                applySearch();
+            }, 350);  // بحث سلس بعد التوقف عن الكتابة
+        });
+
+        // إغلاق المودال عند ESC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+    <!-- ملاحظة: تمت كتابة createdat في الكارد بشكل صحيح: createdAt -->
+    <!-- تصحيح خطأ مطبعي (createdat) أعلاه: سأصلحه في renderCards -->
+    <script>
+        // override للدالة renderCards مع تصحيح createdat
+        function renderCards(studentsArray) {
+            if (!studentsArray || studentsArray.length === 0) {
+                cardsContainer.innerHTML = `<div class="no-results">
+                    <i class="fas fa-user-slash" style="font-size: 3rem; margin-bottom: 15px; display: block; color: #b6ccd9;"></i>
+                    🧑‍🎓 لا يوجد طلاب مطابقين للبحث
+                </div>`;
+                studentCountSpan.innerText = '0';
+                return;
+            }
+
+            let cardsHTML = '';
+            studentsArray.forEach(s => {
+                const code = safeValue(s.id || s._firestoreId || '——');
+                const name = safeValue(s.name);
+                const grade = safeValue(s.grade);
+                const gov = safeValue(s.governorate);
+                const studentPhone = safeValue(s.studentPhone);
+                const parentPhone = safeValue(s.parentPhone);
+                const lastLogin = formatDate(s.lastLogin);
+                const createdAt = formatDate(s.createdAt);  // تصحيح الاسم
+
+                cardsHTML += `
+                    <div class="student-card" onclick='openDetailModal(${JSON.stringify(encodeStudentData(s))})'>
+                        <div class="card-header">
+                            <span class="student-code"><i class="fas fa-qrcode"></i> ${code}</span>
+                            <span style="background: rgba(0,0,0,0.1); padding: 6px 12px; border-radius: 40px;"><i class="fas fa-graduation-cap"></i> ${grade}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="student-name">${name}</div>
+                            
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="info-text">
+                                    <span class="info-label">المحافظة</span>
+                                    <div class="info-value">${gov}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="info-text">
+                                    <span class="info-label">هاتف الطالب</span>
+                                    <div class="phone-badge" dir="ltr">📞 ${studentPhone}</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+                                <span class="parent-phone"><i class="fas fa-family"></i> ولي الأمر: ${parentPhone}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span><i class="far fa-clock"></i> آخر ظهور: ${lastLogin}</span>
+                            <span><i class="far fa-calendar-alt"></i> التسجيل: ${createdAt}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cardsContainer.innerHTML = cardsHTML;
+            studentCountSpan.innerText = studentsArray.length;
+        }
+    </script>
+</body>
+</html>
