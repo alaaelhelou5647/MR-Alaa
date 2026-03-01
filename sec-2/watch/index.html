@@ -93,6 +93,16 @@ body {
   overflow: hidden;
 }
 
+.teacher-name{
+  display: flex;
+   justify-content: space-around;
+
+}
+
+.img-academy{
+  width: 90px;
+}
+
 .header-academy::before {
   content: "α β γ δ ε ζ η θ";
   position: absolute;
@@ -929,7 +939,7 @@ body {
 
 <div class="header-academy animate__animated animate__fadeInDown">
   <div class="teacher-name">
-    <i class="fas fa-chalkboard-teacher"></i>
+      <img class="img-academy" src="https://mr-alaa.vercel.app/icone.png" >
     مع الأستاذ علاء الحلو - مدرس الرياضيات
   </div>
 </div>
@@ -1244,7 +1254,7 @@ async function loadLecture() {
         if (videoCount > 0) {
           const badge = document.getElementById("videoCountBadge");
           badge.style.display = "inline-block";
-          badge.textContent = `${videoCount} فيديو`;
+          badge.innerHTML = `<i class="fas fa-video"></i> ${videoCount} فيديو`;
           badge.className = "animate__animated animate__bounceIn";
         }
         
@@ -1270,7 +1280,7 @@ async function loadLecture() {
         if (d.description) {
           lectureInfo.textContent = d.description;
         } else {
-          lectureInfo.textContent = `محاضرة   ${d.col} في مادة ${d.subject || "الرياضيات"} مع الأستاذ علاء الحلو`;
+          lectureInfo.textContent = `محاضرة ${d.col} في مادة ${d.subject || "الرياضيات"} مع الأستاذ علاء الحلو`;
         }
       }
     });
@@ -1306,14 +1316,6 @@ function displayVideosList() {
     videoItem.style.animationDelay = `${index * 0.1}s`;
     videoItem.onclick = () => playVideo(index);
     
-    // استخراج معرف الفيديو من رابط YouTube
-    let videoId = "";
-    if (video.link.includes("watch?v=")) {
-      videoId = video.link.split("watch?v=")[1].split("&")[0];
-    } else if (video.link.includes("youtu.be/")) {
-      videoId = video.link.split("youtu.be/")[1].split("?")[0];
-    }
-    
     videoItem.innerHTML = `
       <div class="video-item-header">
         <div class="video-order">${video.order || index + 1}</div>
@@ -1329,7 +1331,38 @@ function displayVideosList() {
   updateNavigationInfo();
 }
 
-// تشغيل فيديو محدد
+// دالة لتوليد رابط فيديو آمن مع منع التسجيل
+function generateSecureVideoUrl(videoLink, studentName = '') {
+  // استخراج معرف الفيديو من رابط YouTube
+  let videoId = "";
+  if (videoLink.includes("watch?v=")) {
+    videoId = videoLink.split("watch?v=")[1].split("&")[0];
+  } else if (videoLink.includes("youtu.be/")) {
+    videoId = videoLink.split("youtu.be/")[1].split("?")[0];
+  } else if (videoLink.includes("/embed/")) {
+    videoId = videoLink.split("/embed/")[1].split("?")[0];
+  }
+  
+  if (!videoId) return videoLink;
+  
+  // بناء رابط مع خيارات متقدمة لمنع التسجيل
+  const secureParams = [
+    'enablejsapi=1',
+    'modestbranding=1',
+    'rel=0',
+    'fs=0',
+    'playsinline=1',
+    'iv_load_policy=3',
+    'controls=1',
+    'disablekb=1',
+    'cc_load_policy=0'
+  ];
+  
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?${secureParams.join('&')}`;
+  return embedUrl;
+}
+
+// تشغيل فيديو محدد (نسخة واحدة فقط)
 function playVideo(index) {
   if (index < 0 || index >= videosArray.length) return;
   
@@ -1344,21 +1377,19 @@ function playVideo(index) {
     return;
   }
   
-  // استخراج معرف الفيديو من رابط YouTube
-  let videoId = "";
-  if (video.link.includes("watch?v=")) {
-    videoId = video.link.split("watch?v=")[1].split("&")[0];
-  } else if (video.link.includes("youtu.be/")) {
-    videoId = video.link.split("youtu.be/")[1].split("?")[0];
-  }
+  // الحصول على اسم الطالب للعلامة المائية
+  const student = getCurrentStudent();
+  const studentName = student.name;
   
-  if (!videoId) {
-    showMessage("❌ رابط الفيديو غير صحيح", "error");
-    return;
-  }
+  // استخدام الرابط الآمن بدلاً من الرابط العادي
+  const embedUrl = generateSecureVideoUrl(video.link, studentName);
   
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=1`;
-  document.getElementById("videoFrame").src = embedUrl;
+  // تحديث iframe
+  const videoFrame = document.getElementById("videoFrame");
+  videoFrame.src = embedUrl;
+  
+  // محاولة منع تسجيل الشاشة عبر JavaScript
+  preventScreenRecording();
   
   // تحديث عنوان الفيديو
   document.getElementById("currentVideoTitle").textContent = video.title || `الدرس ${index + 1}`;
@@ -1395,6 +1426,106 @@ function playVideo(index) {
     prevBtn.className = "nav-btn prev";
     nextBtn.className = "nav-btn next";
   }, 1000);
+}
+
+// دالة لمحاولة منع تسجيل الشاشة عبر JavaScript
+function preventScreenRecording() {
+  // إضافة listener لمنع اختصارات تسجيل الشاشة الشائعة
+  document.addEventListener('keydown', function(e) {
+    // منع Ctrl + Shift + S (تسجيل الشاشة في بعض البرامج)
+    if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+      e.preventDefault();
+      return false;
+    }
+    
+    // منع Print Screen
+    if (e.key === 'PrintScreen') {
+      e.preventDefault();
+      return false;
+    }
+    
+    // منع Alt + Print Screen
+    if (e.altKey && e.key === 'PrintScreen') {
+      e.preventDefault();
+      return false;
+    }
+  });
+}
+
+// دالة لتحديث iframe بشكل دوري لمنع التسجيل الطويل
+function refreshVideoSecurity() {
+  let refreshInterval;
+  
+  function startSecurityRefresh() {
+    if (refreshInterval) clearInterval(refreshInterval);
+    
+    refreshInterval = setInterval(() => {
+      const currentVideo = videosArray[currentVideoIndex];
+      if (currentVideo && document.getElementById("videoSection").style.display !== 'none') {
+        const student = getCurrentStudent();
+        const newEmbedUrl = generateSecureVideoUrl(currentVideo.link, student.name);
+        const currentFrame = document.getElementById("videoFrame");
+        
+        if (currentFrame.src !== newEmbedUrl) {
+          currentFrame.src = newEmbedUrl;
+        }
+      }
+    }, 30000);
+  }
+  
+  return { startSecurityRefresh };
+}
+
+// إضافة دالة كشف محاولة التسجيل
+function detectScreenRecording() {
+  let lastWidth = window.innerWidth;
+  let lastHeight = window.innerHeight;
+  let recordingAttempts = 0;
+  
+  setInterval(() => {
+    if (Math.abs(window.innerWidth - lastWidth) > 100 || 
+        Math.abs(window.innerHeight - lastHeight) > 100) {
+      
+      recordingAttempts++;
+      
+      if (recordingAttempts > 2) {
+        showMessage("⚠️ تم اكتشاف محاولة تسجيل. سيتم إيقاف الفيديو", "warning");
+        
+        try {
+          const videoFrame = document.getElementById('videoFrame');
+          videoFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        } catch (e) {}
+      }
+    } else {
+      recordingAttempts = 0;
+    }
+    
+    lastWidth = window.innerWidth;
+    lastHeight = window.innerHeight;
+  }, 2000);
+}
+
+// تفعيل الحماية المستمرة بعد نجاح التفعيل
+function enableContinuousProtection() {
+  const security = refreshVideoSecurity();
+  security.startSecurityRefresh();
+  detectScreenRecording();
+  
+  // منع المستخدم من فتح أدوات المطور
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  
+  // منع اختصارات أدوات المطور
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+        (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  console.log("✅ تم تفعيل نظام الحماية من التسجيل");
 }
 
 // تشغيل الفيديو التالي
@@ -1460,17 +1591,14 @@ window.checkCode = async function() {
     return;
   }
   
-  // إخفاء الرسالة السابقة وإظهار مؤشر التحميل
   messageEl.style.display = 'none';
   loader.style.display = 'block';
   
-  // الحصول على بيانات الطالب
   const student = getCurrentStudent();
   const studentName = student.name;
   const studentGrade = student.grade;
   
   try {
-    // البحث عن الكود في collection "codes"
     const q = query(
       collection(db, "codes"),
       where("code", "==", code),
@@ -1481,7 +1609,6 @@ window.checkCode = async function() {
     loader.style.display = 'none';
     
     if (snap.empty) {
-      // جرب collection "الاكواد" إذا لم يجد في "codes"
       const q2 = query(
         collection(db, "الاكواد"),
         where("code", "==", code),
@@ -1495,7 +1622,6 @@ window.checkCode = async function() {
         return;
       }
       
-      // معالجة النتائج من collection "الاكواد"
       let allowed = false;
       let codeId = "";
       let isTrial = false;
@@ -1514,7 +1640,6 @@ window.checkCode = async function() {
       }
       
     } else {
-      // معالجة النتائج من collection "codes"
       let allowed = false;
       let codeId = "";
       let isTrial = false;
@@ -1559,29 +1684,24 @@ async function processSuccessfulCode(codeId, studentName, studentGrade, code, is
   try {
     await updateDoc(doc(db, collectionName, codeId), usageData);
 
-    // إضافة أنيميشن قبل التبديل
     document.querySelector(".show").classList.add("animate__animated", "animate__fadeOut");
     
     setTimeout(() => {
-      // إخفاء الجزء العلوي
       document.querySelector(".show").style.display = 'none';
-      
-      // إخفاء فورم الكود
       document.getElementById("codeSection").style.display = 'none';
-
-      // إظهار الفيديو وقائمة الفيديوهات
       document.getElementById("videoSection").style.display = 'block';
       document.getElementById("videosListSection").style.display = 'block';
       
-      // عرض قائمة الفيديوهات
       displayVideosList();
       
-      // تشغيل أول فيديو
       if (videosArray.length > 0) {
         playVideo(0);
       } else {
         showMessage("❌ لا يوجد فيديوهات متاحة لهذه المحاضرة", "error");
       }
+      
+      // تفعيل الحماية المستمرة
+      enableContinuousProtection();
 
     }, 800);
 
@@ -1609,21 +1729,19 @@ async function checkIfAlreadyUsed() {
     if (!snap.empty) {
       console.log("✅ الطالب فعّل المحاضرة من قبل");
 
-      // إخفاء جزء الـ show بالكامل
       document.querySelector(".show").style.display = 'none';
       document.getElementById("codeSection").style.display = 'none';
-
-      // إظهار الفيديو وقائمة الفيديوهات
       document.getElementById("videoSection").style.display = 'block';
       document.getElementById("videosListSection").style.display = 'block';
       
-      // عرض قائمة الفيديوهات
       displayVideosList();
       
-      // تشغيل أول فيديو
       if (videosArray.length > 0) {
         playVideo(0);
       }
+      
+      // تفعيل الحماية المستمرة
+      enableContinuousProtection();
 
       return;
     }
@@ -1634,7 +1752,7 @@ async function checkIfAlreadyUsed() {
 }
 
 // السماح بالضغط على Enter لتفعيل الكود
-document.getElementById("codeInput").addEventListener("keypress", function(event) {
+document.getElementById("codeInput")?.addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
     checkCode();
@@ -1643,7 +1761,6 @@ document.getElementById("codeInput").addEventListener("keypress", function(event
 
 // التهيئة عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', async () => {
-  // إنشاء أنيميشن الرياضيات
   createMathAnimation();
   
   if (lectureName) {
@@ -1677,13 +1794,11 @@ document.addEventListener('mousemove', function(e) {
   });
 });
 
-
 // 👇 مهم جدًا عشان الأزرار تشتغل مع type="module"
 window.playNextVideo = playNextVideo;
 window.playPreviousVideo = playPreviousVideo;
 window.checkCode = checkCode;
 
 </script>
-
 </body>
 </html>
