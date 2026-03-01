@@ -66,29 +66,30 @@ async function loadLectures(filterGrade = "sec-2"){
     querySnapshot.forEach(doc => {
       const d = doc.data();
       
-      // تحديد لون البادجة بناءً على السعر
-const badgeClass = d.paid === "free" ? "badge free" : "badge";
+     const badgeClass = d.paid === "free" ? "badge free" : "badge";
 
-// تجهيز شكل السعر (قديم + جديد)
+     
+// تجهيز شكل السعر
 let priceHTML = "";
 
 if (d.paid === "free") {
+  // محتوى مجاني
   priceHTML = `<span class="badge free"><i class="fas fa-gift"></i> مجاني</span>`;
 } else {
   const old = d.oldPrice || null;
   const now = d.price || "0";
 
   if (old && Number(old) > Number(now)) {
-    // عند وجود تخفيض حقيقي
+    // يوجد خصم - عرض السعر القديم والجديد
     priceHTML = `
-      <span class="price-box">
+      <div class="price-box">
         <span class="old-price">${old} ج.م</span>
         <span class="new-price">${now} ج.م</span>
-      </span>
+      </div>
     `;
   } else {
-    // بدون تخفيض
-    priceHTML = `<span class="badge"><i class="fas fa-money-bill-wave"></i> ${now} ج.م</span>`;
+    // لا يوجد خصم - عرض السعر العادي فقط
+    priceHTML = `<span class="regular-price"><i class="fas fa-money-bill-wave"></i> ${now} ج.م</span>`;
   }
 }
 
@@ -112,9 +113,10 @@ if (d.paid === "free") {
             </div>
 
             <div class="detail-item">
-  ${priceHTML}
-</div>
+              ${priceHTML}
+            </div>
 
+          </div>
           <a class="button" href="watch/?lecture=${encodeURIComponent(d.col)}">
             <i class="fas fa-play-circle"></i> ابدأ المشاهدة
           </a>

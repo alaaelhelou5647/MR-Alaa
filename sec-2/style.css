@@ -311,6 +311,33 @@ margin: 10px 0;
   margin-bottom: 10px;
 }
 
+.price-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff3f3;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #f72525;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.badge.free {
+  background: #e6fff2;
+  color: #0a7a3d;
+}
+
+
 footer {
   text-align: center;
   padding: 40px 20px 20px;
@@ -321,6 +348,64 @@ footer {
 
 footer .heart {
   color: var(--orange-primary);
+}
+
+/* أنماط السعر */
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.price-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff3f3;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #f72525;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* سعر عادي بدون خصم */
+.regular-price {
+  display: inline-block;
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+  color: white;
+  padding: 6px 15px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.regular-price i {
+  margin-left: 5px;
+}
+
+.badge.free {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  padding: 6px 15px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.badge.free i {
+  margin-left: 5px;
 }
 
 @media (max-width: 768px) {
