@@ -1,13 +1,397 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم الذهبية | Golden Admin</title>
+  <!-- خطوط حديثة + أيقونات Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #2e2102 0%, #5f4c1a 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* الخلفية بنقوش ذهبية خفيفة */
+    body::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path fill="%23ffd700" d="M20 20 L30 20 L25 30 Z M60 40 L70 40 L65 50 Z M10 70 L20 70 L15 80 Z M80 10 L90 10 L85 20 Z"/></svg>');
+      pointer-events: none;
+    }
+
+    /* ===== تسجيل الدخول ===== */
+    .login-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      padding: 2.8rem 2.2rem;
+      width: 420px;
+      border-radius: 40px;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 2;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #ffd700, #b8860b, #ffd700);
+    }
+
+    .login-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 40px 70px -15px #00000066;
+    }
+
+    .login-card h2 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #5f440b;
+      text-align: center;
+      margin-bottom: 1.8rem;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .login-card h2 i {
+      color: #b8860b;
+      font-size: 2.5rem;
+      filter: drop-shadow(0 2px 4px rgba(184, 134, 11, 0.3));
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #b8860b;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+      z-index: 1;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px 50px 16px 20px;
+      border: 2px solid #e9e0cf;
+      border-radius: 60px;
+      font-size: 1rem;
+      background: white;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+
+    .input-group input:focus {
+      border-color: #b8860b;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.15);
+    }
+
+    .input-group input:focus + i {
+      color: #5f440b;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .checkbox-custom {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #6b5c2a;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .checkbox-custom input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #b8860b;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: #b8860b;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border-bottom: 1px dashed transparent;
+    }
+
+    .forgot-link:hover {
+      color: #5f440b;
+      border-bottom-color: #5f440b;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #5f440b 0%, #b8860b 100%);
+      border: none;
+      border-radius: 60px;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 15px 25px -8px rgba(95, 68, 11, 0.4);
+      letter-spacing: 0.5px;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(135deg, #b8860b 0%, #5f440b 100%);
+      box-shadow: 0 20px 30px -8px #5f440b;
+      transform: scale(1.02);
+    }
+
+    .btn-login i {
+      font-size: 1.2rem;
+      transition: transform 0.3s;
+    }
+
+    .btn-login:hover i {
+      transform: translateX(-5px);
+    }
+
+    .error-message {
+      color: #c0392b;
+      background: #fdf2f1;
+      padding: 12px 20px;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid #ffcdd2;
+      box-shadow: 0 4px 10px rgba(192, 57, 43, 0.1);
+    }
+
+    .error-message i {
+      font-size: 1.1rem;
+      color: #c0392b;
+    }
+
+    /* ===== لوحة التحكم (admin panel) - لن تظهر لأننا سننتقل لصفحة منفصلة ===== */
+    #adminPanel {
+      display: none; /* مخفية لأننا سنستخدم صفحة منفصلة */
+    }
+
+    /* حالة الاخفاء */
+    .hidden {
+      display: none !important;
+    }
+
+    /* responsive */
+    @media (max-width: 480px) {
+      .login-card { width: 92%; padding: 2rem 1.5rem; }
+      .login-card h2 { font-size: 2rem; }
+    }
+
+    /* تأثير تحميل بسيط */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    
 
-    
+  <!-- بطاقة دخول ذهبية فاخرة -->
+  <div class="login-card" id="loginBox">
+    <h2><i class="fas fa-crown"></i> القيادة الذهبية</h2>
+
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="email" placeholder="البريد الإلكتروني" autocomplete="email">
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="password" placeholder="كلمة المرور" autocomplete="current-password">
+    </div>
+
+    <div class="remember-row">
+      <label class="checkbox-custom">
+        <input type="checkbox" id="remember" checked>
+        <i class="far fa-check-circle" style="color:#b8860b;"></i> 
+        <span>تذكرني لاحقاً</span>
+      </label>
+      <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+    </div>
+
+    <button class="btn-login" onclick="login()" id="loginBtn">
+      <span>دخول المشرف</span>
+      <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div id="error" class="error-message hidden">
+      <i class="fas fa-exclamation-triangle"></i> 
+      <span>بيانات الدخول غير صحيحة</span>
+    </div>
+  </div>
+
+  <!-- عنصر مخفي للتوجيه - لن يظهر أبداً -->
+  <div id="adminPanel"></div>
+
+  <!-- Firebase (module) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut,
+      setPersistence,
+      browserLocalPersistence,
+      browserSessionPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBB-L6uhazoGVYg2lkphimDMbdjFhrfXjw",
+      authDomain: "login-87618.firebaseapp.com",
+      databaseURL: "https://login-87618-default-rtdb.firebaseio.com",
+      projectId: "login-87618",
+      storageBucket: "login-87618.firebasestorage.app",
+      messagingSenderId: "915916987311",
+      appId: "1:915916987311:web:0da484d712d79b50916d5a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // عناصر DOM
+    const loginBox = document.getElementById('loginBox');
+    const errorDiv = document.getElementById('error');
+    const loginBtn = document.getElementById('loginBtn');
+
+    // دالة تسجيل الدخول (مع persistence والتوجيه)
+    window.login = function() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+
+      // التحقق من ملء الحقول
+      if (!email || !password) {
+        errorDiv.querySelector('span').textContent = 'الرجاء إدخال البريد وكلمة المرور';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // إخفاء الخطأ السابق
+      errorDiv.classList.add('hidden');
+      
+      // تغيير حالة الزر لإظهار التحميل
+      const originalText = loginBtn.innerHTML;
+      loginBtn.innerHTML = '<span>جاري تسجيل الدخول...</span> <i class="fas fa-spinner fa-spin"></i>';
+      loginBtn.disabled = true;
+
+      // اختيار نوع persistence بناءً على "تذكرني"
+      const persistenceType = remember ? browserLocalPersistence : browserSessionPersistence;
+
+      setPersistence(auth, persistenceType)
+        .then(() => signInWithEmailAndPassword(auth, email, password))
+        .then((userCredential) => {
+          console.log("تم تسجيل الدخول بنجاح", userCredential.user.email);
+          
+          // ✅ التوجيه إلى مجلد panal/
+          window.location.href = "panal/";
+        })
+        .catch((error) => {
+          console.warn("فشل تسجيل الدخول", error.code);
+          
+          // رسائل خطأ مخصصة
+          let errorMessage = 'بيانات الدخول غير صحيحة';
+          if (error.code === 'auth/user-not-found') {
+            errorMessage = 'البريد الإلكتروني غير مسجل';
+          } else if (error.code === 'auth/wrong-password') {
+            errorMessage = 'كلمة المرور غير صحيحة';
+          } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'صيغة البريد الإلكتروني غير صحيحة';
+          } else if (error.code === 'auth/too-many-requests') {
+            errorMessage = 'تم حظر الحساب مؤقتاً.. حاول لاحقاً';
+          }
+          
+          errorDiv.querySelector('span').textContent = errorMessage;
+          errorDiv.classList.remove('hidden');
+          
+          // إعادة الزر لحالته الطبيعية
+          loginBtn.innerHTML = originalText;
+          loginBtn.disabled = false;
+        });
+    };
+
+    // دالة تسجيل الخروج - لن تستخدم في صفحة login ولكن نحتفظ بها للاكتمال
+    window.logout = function() {
+      signOut(auth)
+        .then(() => {
+          console.log("تم تسجيل الخروج");
+          window.location.href = "index.html"; // العودة لصفحة تسجيل الدخول
+        })
+        .catch((e) => console.warn("خطأ في تسجيل الخروج:", e));
+    };
+
+    // التحقق من حالة المصادقة عند تحميل الصفحة
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // إذا كان المستخدم مسجل دخوله بالفعل، توجه مباشرة إلى لوحة التحكم
+        console.log("مستخدم نشط، جارٍ التوجيه إلى لوحة التحكم:", user.email);
+        window.location.href = "panal/";
+      }
+    });
+  </script>
 </body>
 </html>
