@@ -516,9 +516,14 @@
                 padding-top: 20px;
             }
         }
+
+
     </style>
 </head>
 <body>
+
+
+
     <!-- ===== الشريط الجانبي المتجاوب ===== -->
     <div class="sidebar">
         <div class="logo-area">
@@ -533,10 +538,10 @@
             <a href="#" class="nav-item active">
                 <i class="fas fa-tachometer-alt"></i> <span>لوحة التحكم</span>
             </a>
-            <a href="students/" class="nav-item">
+            <a href="/alaa-panel-7f9K2/students/" class="nav-item">
                 <i class="fas fa-chalkboard-teacher"></i> <span>الطلاب</span>
             </a>
-            <a href="cods/" class="nav-item">
+            <a href="/alaa-panel-7f9K2/cods/" class="nav-item">
                 <i class="fas fa-file-alt"></i> <span>الاكود</span>
             </a>
         </div>
@@ -554,14 +559,14 @@
 
         <!-- بطاقات الروابط السريعة -->
         <div class="quick-links">
-            <a href="students/" class="link-card">
+            <a href="/alaa-panel-7f9K2/students/" class="link-card">
                 <div class="card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
                 <div class="card-text">
                     <h4>الطلاب</h4>
                     <small>إدارة الطلاب</small>
                 </div>
             </a>
-            <a href="cods/" class="link-card">
+            <a href="/alaa-panel-7f9K2/cods/" class="link-card">
                 <div class="card-icon"><i class="fas fa-file-alt"></i></div>
                 <div class="card-text">
                     <h4>الاكود</h4>
@@ -638,10 +643,52 @@
 
         -->
 
-        <!-- تذييل الصفحة -->
-        <div class="footer-note">
-            <i class="fas fa-road"></i> منصة مسار التعليمية © 2025 - جميع الروابط تجريبية - تصميم متجاوب بالكامل
-        </div>
     </div>
+    <script>
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+document.onkeydown = function(e) {
+  if (e.keyCode == 123) {
+    return false;
+  }
+};
+
+const adminUser="alaa";
+const adminPass="123456";
+
+function login(){
+
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+let remember=document.getElementById("remember").checked;
+
+if(user===adminUser && pass===adminPass){
+
+if(remember){
+localStorage.setItem("admin","true");
+}else{
+sessionStorage.setItem("admin","true");
+}
+
+document.getElementById("loginBox").style.display="none";
+document.getElementById("adminPanel").style.display="block";
+}else{
+
+document.getElementById("error").style.display="block";
+
+}
+
+}
+
+if(
+localStorage.getItem("admin")==="true" ||
+sessionStorage.getItem("admin")==="true"
+){
+document.getElementById("loginBox").style.display="none";
+document.getElementById("adminPanel").style.display="block";}
+</script>
+
+
+
 </body>
 </html>
